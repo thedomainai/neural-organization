@@ -20,8 +20,8 @@
 
 | 階層 | ファイル | 内容 |
 |---|---|---|
-| 思想 | [concept.md](concept.md) | 概念・思想・戦略の定義 |
-| 思想 | [design.md](design.md) | 5 層 + 4 横断要素の詳細設計 |
+| 思想 | [docs/concept.md](docs/concept.md) | 概念・思想・戦略の定義 |
+| 思想 | [docs/design.md](docs/design.md) | 5 層 + 4 横断要素の詳細設計 |
 | 詳細設計 | [docs/philosophy/](docs/philosophy/) | 各レイヤー・横断要素の設計思想（10 ファイル） |
 | 詳細設計 | [docs/hitl/](docs/hitl/) | HITL 情報抽出要件・抽出パターン設計 |
 | 適用 | [docs/agentic-ai-framework.md](docs/agentic-ai-framework.md) | Neural Organization 準拠 Agentic AI の構築フレームワーク |
@@ -30,8 +30,8 @@
 
 ## 読む順序
 
-1. **[concept.md](concept.md)** — Neural Organization とは何か。Thesis、5 層認知パイプライン、6 つの設計原則
-2. **[design.md](design.md)** — どう設計されているか。各レイヤーの具体例・定量モデル・Trust Score
+1. **[docs/concept.md](docs/concept.md)** — Neural Organization とは何か。Thesis、5 層認知パイプライン、6 つの設計原則
+2. **[docs/design.md](docs/design.md)** — どう設計されているか。各レイヤーの具体例・定量モデル・Trust Score
 3. **[docs/philosophy/](docs/philosophy/)** — 興味のある要素を深掘り（各 400-800 行の詳細設計）
 4. **[docs/ax-company-design.md](docs/ax-company-design.md)** — 思想がどう実プロダクトに適用されているか
 
