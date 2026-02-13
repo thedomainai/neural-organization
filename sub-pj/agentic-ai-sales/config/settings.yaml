@@ -1,0 +1,63 @@
+# Sales Presentation Automator Configuration
+
+# LLM Settings
+llm:
+  model: "claude-sonnet-4-20250514"
+  max_tokens: 4096
+  temperature: 0.7
+
+# Presentation Settings
+presentation:
+  default_slides: 7
+  min_slides: 5
+  max_slides: 10
+
+# Scenario Types
+scenarios:
+  - id: new_business_1st
+    name: "新規1次商談"
+    description: "課題仮説 + ヒアリング + 概要説明"
+    framework: "SPIN"
+    slides:
+      - type: title
+      - type: agenda
+      - type: situation
+      - type: problem
+      - type: implication
+      - type: need_payoff
+      - type: next_steps
+
+# Industries
+industries:
+  - id: it_software
+    name: "IT・ソフトウェア"
+  - id: manufacturing
+    name: "製造"
+  - id: finance
+    name: "金融"
+  - id: retail
+    name: "小売"
+  - id: healthcare
+    name: "医療"
+  - id: other
+    name: "その他"
+
+# Company Sizes
+company_sizes:
+  - id: small
+    name: "〜50名"
+    range: [1, 50]
+  - id: medium
+    name: "51-300名"
+    range: [51, 300]
+  - id: large
+    name: "301-1000名"
+    range: [301, 1000]
+  - id: enterprise
+    name: "1001名〜"
+    range: [1001, null]
+
+# Output Settings
+output:
+  default_format: "pptx"
+  default_dir: "./output"

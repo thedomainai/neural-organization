@@ -1,0 +1,24 @@
+name: News Ingestion
+
+on:
+  schedule:
+    # Run every 4 hours
+    - cron: '0 */4 * * *'
+  workflow_dispatch:
+    inputs:
+      source_id:
+        description: 'Specific source ID to fetch (optional)'
+        required: false
+        type: string
+
+jobs:
+  ingest:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Trigger ingestion
+        run: |
+          curl -X POST "${{ secrets.APP_URL }}/api/ingest" \
+            -H "Content-Type: application/json" \
+            -H "x-api-key: ${{ secrets.ADMIN_API_KEY }}" \
+            -d '{"sourceId": "${{ github.event.inputs.source_id }}"}'

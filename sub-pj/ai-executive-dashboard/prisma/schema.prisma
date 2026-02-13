@@ -1,0 +1,103 @@
+// Prisma schema for AI Executive Dashboard
+// https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// =============================================================================
+// Source Management
+// =============================================================================
+
+model Source {
+  id            String    @id @default(cuid())
+  name          String
+  type          String    // "rss" | "blog"
+  url           String    @unique
+  categoryHint  String?   // Default category suggestion
+  enabled       Boolean   @default(true)
+  fetchInterval Int       @default(240) // minutes
+  lastFetchedAt DateTime?
+  failureCount  Int       @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  articles Article[]
+
+  @@index([enabled])
+  @@index([type])
+}
+
+// =============================================================================
+// Articles
+// =============================================================================
+
+model Article {
+  id             String   @id @default(cuid())
+  title          String
+  summary        String   @db.Text
+  content        String?  @db.Text
+  sourceUrl      String   @unique
+  sourceId       String
+  category       String
+  impactLevel    String   // "High" | "Medium" | "Low"
+  relevanceScore Int      // 0-100
+  publishedAt    DateTime
+  fetchedAt      DateTime @default(now())
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  source         Source          @relation(fields: [sourceId], references: [id])
+  reportArticles ReportArticle[]
+
+  @@index([category])
+  @@index([publishedAt])
+  @@index([relevanceScore])
+  @@index([sourceId])
+}
+
+// =============================================================================
+// Reports
+// =============================================================================
+
+model Report {
+  id                String    @id @default(cuid())
+  title             String
+  week              Int
+  year              Int
+  content           String    @db.Text // Markdown content
+  status            String    @default("draft") // "draft" | "published"
+  version           Int       @default(1)
+  articleCount      Int       @default(0)
+  categoryBreakdown Json?     // { "Foundation Models": 5, ... }
+  generatedAt       DateTime  @default(now())
+  publishedAt       DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  reportArticles ReportArticle[]
+
+  @@unique([week, year])
+  @@index([year, week])
+  @@index([status])
+}
+
+model ReportArticle {
+  id        String @id @default(cuid())
+  reportId  String
+  articleId String
+
+  report  Report  @relation(fields: [reportId], references: [id], onDelete: Cascade)
+  article Article @relation(fields: [articleId], references: [id], onDelete: Cascade)
+
+  @@unique([reportId, articleId])
+}

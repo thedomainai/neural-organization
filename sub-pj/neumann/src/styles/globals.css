@@ -1,0 +1,100 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/**
+ * Midnight Logic - Global Styles
+ * neumannのデザインシステム基盤
+ */
+
+@layer base {
+  /* フォントの読み込み */
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap');
+
+  /* ===========================================
+   * Executive Navy カラーシステム
+   * 重厚・権威・規律を表現するプロフェッショナルなデザイン
+   * =========================================== */
+
+  :root {
+    /* ブランドカラー */
+    --color-primary: #1E293B;
+    --color-primary-hover: #0F172A;
+    --color-primary-light: #F1F5F9;
+    --color-accent: #334155;
+
+    /* サイドバー */
+    --color-sidebar-bg: #0F172A;
+    --color-sidebar-text: rgba(255, 255, 255, 0.7);
+    --color-sidebar-text-active: #FFFFFF;
+    --color-sidebar-hover: rgba(255, 255, 255, 0.05);
+    --color-sidebar-active: rgba(255, 255, 255, 0.1);
+    --color-sidebar-border: rgba(255, 255, 255, 0.1);
+
+    /* 背景色 */
+    --color-bg-base: #F8FAFC;
+    --color-bg-layer1: #FFFFFF;
+    --color-bg-layer2: #F8FAFC;
+    --color-bg-layer3: #F1F5F9;
+    --color-bg-elevated: #FFFFFF;
+
+    /* テキストカラー */
+    --color-text-primary: #0F172A;
+    --color-text-secondary: #334155;
+    --color-text-muted: #64748B;
+    --color-text-inverse: #FFFFFF;
+
+    /* ボーダー */
+    --color-border-default: #E2E8F0;
+    --color-border-subtle: #F1F5F9;
+    --color-border-active: #1E293B;
+
+    /* ステータスカラー */
+    --color-critical-bg: #FEF2F2;
+    --color-critical-border: #FECACA;
+    --color-critical-text: #DC2626;
+    --color-warning-bg: #FFFBEB;
+    --color-warning-border: #FDE68A;
+    --color-warning-text: #D97706;
+    --color-success-bg: #F0FDF4;
+    --color-success-border: #BBF7D0;
+    --color-success-text: #16A34A;
+    --color-info-bg: #EFF6FF;
+    --color-info-border: #BFDBFE;
+    --color-info-text: #2563EB;
+  }
+
+  html {
+    @apply antialiased;
+  }
+
+  body {
+    @apply bg-background-base text-foreground-primary;
+    font-family: 'Inter', 'Hiragino Sans', 'Noto Sans JP', sans-serif;
+  }
+
+  /* スクロールバーのスタイリング（Chrome/Safari） */
+  ::-webkit-scrollbar {
+    @apply w-2;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-background-layer2;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-background-layer3 rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: var(--color-secondary);
+  }
+}
+
+@layer components {
+  /* 共通のフォーカススタイル */
+  .focus-ring {
+    @apply focus:outline-none focus:ring-2 focus:ring-accent-primary focus:ring-offset-2 focus:ring-offset-background-base;
+  }
+}

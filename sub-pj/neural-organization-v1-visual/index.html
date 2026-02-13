@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Neural Organization</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            'sans': ['Inter', 'Noto Sans JP', 'sans-serif'],
+          },
+          colors: {
+            'layer': {
+              'input': '#6366f1',
+              'memory': '#8b5cf6',
+              'processing': '#ec4899',
+              'evaluation': '#10b981',
+              'output': '#06b6d4',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: linear-gradient(180deg, #0a0a0f 0%, #111118 100%);
+      min-height: 100vh;
+    }
+
+    .text-gradient {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .text-gradient-warm {
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 50%, #f97316 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .glass-card {
+      background: rgba(255, 255, 255, 0.02);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.6s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .scroll-indicator {
+      animation: bounce 2s infinite;
+    }
+
+    @keyframes bounce {
+      0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+      40% { transform: translateY(-8px); }
+      60% { transform: translateY(-4px); }
+    }
+
+    /* Language switcher */
+    .lang-switch {
+      transition: all 0.2s ease;
+    }
+    .lang-switch.active {
+      background: rgba(255, 255, 255, 0.15);
+      color: white;
+    }
+
+    /* Hide inactive language */
+    [data-lang-ja] { display: none; }
+    [data-lang-en] { display: none; }
+    html[lang="ja"] [data-lang-ja] { display: inline; }
+    html[lang="en"] [data-lang-en] { display: inline; }
+
+    /* Flow animation */
+    .flow-arrow {
+      animation: flowPulse 2s ease-in-out infinite;
+    }
+    @keyframes flowPulse {
+      0%, 100% { opacity: 0.4; }
+      50% { opacity: 1; }
+    }
+
+    /* Tool icon hover */
+    .tool-icon {
+      transition: all 0.2s ease;
+    }
+    .tool-icon:hover {
+      transform: scale(1.1);
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    /* Layer card */
+    .layer-card {
+      transition: all 0.3s ease;
+    }
+    .layer-card:hover {
+      transform: translateY(-4px);
+    }
+
+    /* Horizontal scroll for flow */
+    .flow-container {
+      overflow-x: auto;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255,255,255,0.2) transparent;
+    }
+    .flow-container::-webkit-scrollbar {
+      height: 6px;
+    }
+    .flow-container::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .flow-container::-webkit-scrollbar-thumb {
+      background: rgba(255,255,255,0.2);
+      border-radius: 3px;
+    }
+  </style>
+</head>
+<body class="text-white font-sans">
+
+  <!-- Language Switcher (Fixed) -->
+  <div class="fixed top-6 right-6 z-50 flex gap-1 glass-card rounded-full p-1">
+    <button onclick="setLang('ja')" id="lang-ja" class="lang-switch active px-3 py-1.5 rounded-full text-sm font-medium text-white/70 hover:text-white">
+      JA
+    </button>
+    <button onclick="setLang('en')" id="lang-en" class="lang-switch px-3 py-1.5 rounded-full text-sm font-medium text-white/70 hover:text-white">
+      EN
+    </button>
+  </div>
+
+  <!-- Hero Section -->
+  <section class="min-h-screen flex flex-col items-center justify-center px-6 relative">
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+      <div class="absolute top-1/3 left-1/4 w-96 h-96 bg-violet-500/5 rounded-full blur-3xl"></div>
+      <div class="absolute bottom-1/3 right-1/4 w-96 h-96 bg-indigo-500/5 rounded-full blur-3xl"></div>
+    </div>
+
+    <div class="text-center z-10 max-w-4xl">
+      <p class="text-indigo-400 text-sm tracking-[0.3em] uppercase mb-4 font-medium">
+        <span data-lang-ja>AI時代の企業アーキテクチャ</span>
+        <span data-lang-en>Enterprise Architecture for the AI Era</span>
+      </p>
+      <h1 class="text-5xl md:text-7xl font-bold mb-6 leading-tight">
+        <span class="text-gradient">Neural Organization</span>
+      </h1>
+      <p class="text-xl md:text-2xl text-white/60 font-light mb-4">
+        Complete Sync: Culture, Data, Strategy, Execution
+      </p>
+      <p class="text-lg text-white/40 max-w-2xl mx-auto mb-12">
+        <span data-lang-ja>人類より優れたAIを人類のために活用する<br>次世代の企業経営アーキテクチャ</span>
+        <span data-lang-en>Harness superintelligent AI for humanity<br>Next-generation enterprise architecture</span>
+      </p>
+
+      <a href="#architecture" class="inline-flex items-center gap-2 px-8 py-4 bg-white/10 hover:bg-white/15 border border-white/20 rounded-full transition-all duration-300 group">
+        <span data-lang-ja>アーキテクチャを見る</span>
+        <span data-lang-en>Explore Architecture</span>
+        <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+        </svg>
+      </a>
+    </div>
+
+    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 scroll-indicator">
+      <svg class="w-6 h-6 text-white/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
+      </svg>
+    </div>
+  </section>
+
+  <!-- Architecture Flow Section -->
+  <section id="architecture" class="py-24 px-6">
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center mb-16 reveal">
+        <h2 class="text-3xl md:text-5xl font-bold mb-4">
+          <span class="text-gradient-warm">
+            <span data-lang-ja>データフローアーキテクチャ</span>
+            <span data-lang-en>Data Flow Architecture</span>
+          </span>
+        </h2>
+        <p class="text-white/50 text-lg max-w-2xl mx-auto">
+          <span data-lang-ja>御社の既存ツールからデータを収集し、AIが処理し、価値としてアウトプット</span>
+          <span data-lang-en>Collect data from your existing tools, process with AI, and output as value</span>
+        </p>
+      </div>
+
+      <!-- Horizontal Flow -->
+      <div class="flow-container reveal">
+        <div class="flex gap-4 min-w-max pb-4">
+
+          <!-- INPUT LAYER -->
+          <div class="layer-card glass-card rounded-2xl p-6 w-80 border-t-4 border-indigo-500">
+            <div class="flex items-center gap-3 mb-4">
+              <div class="w-10 h-10 rounded-lg bg-indigo-500/20 flex items-center justify-center">
+                <svg class="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
+                </svg>
+              </div>
+              <div>
+                <h3 class="font-bold text-indigo-300">INPUT</h3>
+                <p class="text-xs text-white/50">
+                  <span data-lang-ja>社内データの収集</span>
+                  <span data-lang-en>Internal Data Collection</span>
+                </p>
+              </div>
+            </div>
+
+            <div class="space-y-3">
+              <!-- 会議 -->
+              <div class="bg-white/5 rounded-lg p-3">
+                <p class="text-xs text-white/40 mb-2">
+                  <span data-lang-ja>📹 会議・商談</span>
+                  <span data-lang-en>📹 Meetings</span>
+                </p>
+                <div class="flex gap-2 flex-wrap">
+                  <span class="tool-icon text-xs bg-white/10 px-2 py-1 rounded">Zoom</span>
+                  <span class="tool-icon text-xs bg-white/10 px-2 py-1 rounded">Meet</span>
+                  <span class="tool-icon text-xs bg-white/10 px-2 py-1 rounded">Teams</span>
+                </div>
+              </div>
+
+              <!-- ドキュメント -->
+              <div class="bg-white/5 rounded-lg p-3">
+                <p class="text-xs text-white/40 mb-2">
+                  <span data-lang-ja>📝 ドキュメント</span>
+                  <span data-lang-en>📝 Documents</span>
+                </p>
+                <div class="flex gap-2 flex-wrap">
+                  <span class="tool-icon text-xs bg-white/10 px-2 py-1 rounded">Notion</span>
+                  <span class="tool-icon text-xs bg-white/10 px-2 py-1 rounded">Google Docs</span>
+                  <span class="tool-icon text-xs bg-white/10 px-2 py-1 rounded">Confluence</span>
+                </div>
+              </div>
+
+              <!-- タスク -->
+              <div class="bg-white/5 rounded-lg p-3">
+                <p class="text-xs text-white/40 mb-2">
+                  <span data-lang-ja>✅ タスク管理</span>
+                  <span data-lang-en>✅ Task Management</span>
+                </p>
+                <div class="flex gap-2 flex-wrap">
+                  <span class="tool-icon text-xs bg-white/10 px-2 py-1 rounded">Asana</span>
+                  <span class="tool-icon text-xs bg-white/10 px-2 py-1 rounded">Jira</span>
+                  <span class="tool-icon text-xs bg-white/10 px-2 py-1 rounded">Linear</span>
+                </div>
+              </div>
+
+              <!-- KPI -->
+              <div class="bg-white/5 rounded-lg p-3">
+                <p class="text-xs text-white/40 mb-2">
+                  <span data-lang-ja>📊 KPI・アナリティクス</span>
+                  <span data-lang-en>📊 KPI & Analytics</span>
+                </p>
+                <div class="flex gap-2 flex-wrap">
+                  <span class="tool-icon text-xs bg-white/10 px-2 py-1 rounded">GA4</span>
+                  <span class="tool-icon text-xs bg-white/10 px-2 py-1 rounded">Mixpanel</span>
+                  <span class="tool-icon text-xs bg-white/10 px-2 py-1 rounded">Amplitude</span>
+                </div>
+              </div>
+
+              <!-- CRM -->
+              <div class="bg-white/5 rounded-lg p-3">
+                <p class="text-xs text-white/40 mb-2">
+                  <span data-lang-ja>💼 CRM・営業</span>
+                  <span data-lang-en>💼 CRM & Sales</span>
+                </p>
+                <div class="flex gap-2 flex-wrap">
+                  <span class="tool-icon text-xs bg-white/10 px-2 py-1 rounded">Salesforce</span>
+                  <span class="tool-icon text-xs bg-white/10 px-2 py-1 rounded">HubSpot</span>
+                </div>
+              </div>
+
+              <!-- ATS -->
+              <div class="bg-white/5 rounded-lg p-3">
+                <p class="text-xs text-white/40 mb-2">
+                  <span data-lang-ja>👥 ATS・採用</span>
+                  <span data-lang-en>👥 ATS & Recruiting</span>
+                </p>
+                <div class="flex gap-2 flex-wrap">
+                  <span class="tool-icon text-xs bg-white/10 px-2 py-1 rounded">HRMOS</span>
+                  <span class="tool-icon text-xs bg-white/10 px-2 py-1 rounded">Greenhouse</span>
+                </div>
+              </div>
+
+              <!-- コミュニケーション -->
+              <div class="bg-white/5 rounded-lg p-3">
+                <p class="text-xs text-white/40 mb-2">
+                  <span data-lang-ja>💬 コミュニケーション</span>
+                  <span data-lang-en>💬 Communication</span>
+                </p>
+                <div class="flex gap-2 flex-wrap">
+                  <span class="tool-icon text-xs bg-white/10 px-2 py-1 rounded">Slack</span>
+                  <span class="tool-icon text-xs bg-white/10 px-2 py-1 rounded">Teams</span>
+                </div>
+              </div>
+
+              <!-- 財務 -->
+              <div class="bg-white/5 rounded-lg p-3">
+                <p class="text-xs text-white/40 mb-2">
+                  <span data-lang-ja>💰 財務・経理</span>
+                  <span data-lang-en>💰 Finance</span>
+                </p>
+                <div class="flex gap-2 flex-wrap">
+                  <span class="tool-icon text-xs bg-white/10 px-2 py-1 rounded">freee</span>
+                  <span class="tool-icon text-xs bg-white/10 px-2 py-1 rounded">MoneyForward</span>
+                </div>
+              </div>
+
+              <!-- コード -->
+              <div class="bg-white/5 rounded-lg p-3">
+                <p class="text-xs text-white/40 mb-2">
+                  <span data-lang-ja>💻 コード・開発</span>
+                  <span data-lang-en>💻 Code & Development</span>
+                </p>
+                <div class="flex gap-2 flex-wrap">
+                  <span class="tool-icon text-xs bg-white/10 px-2 py-1 rounded">GitHub</span>
+                  <span class="tool-icon text-xs bg-white/10 px-2 py-1 rounded">GitLab</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Arrow -->
+          <div class="flex items-center">
+            <svg class="w-8 h-8 text-white/30 flow-arrow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+            </svg>
+          </div>
+
+          <!-- MEMORY LAYER -->
+          <div class="layer-card glass-card rounded-2xl p-6 w-72 border-t-4 border-violet-500">
+            <div class="flex items-center gap-3 mb-4">
+              <div class="w-10 h-10 rounded-lg bg-violet-500/20 flex items-center justify-center">
+                <svg class="w-5 h-5 text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"/>
+                </svg>
+              </div>
+              <div>
+                <h3 class="font-bold text-violet-300">MEMORY</h3>
+                <p class="text-xs text-white/50">
+                  <span data-lang-ja>組織の記憶</span>
+                  <span data-lang-en>Organizational Memory</span>
+                </p>
+              </div>
+            </div>
+
+            <div class="space-y-3">
+              <div class="bg-violet-500/10 rounded-lg p-4 border border-violet-500/20">
+                <p class="font-medium text-violet-300 text-sm mb-1">Vector Database</p>
+                <p class="text-xs text-white/50">
+                  <span data-lang-ja>長期記憶・ナレッジ蓄積</span>
+                  <span data-lang-en>Long-term memory & knowledge</span>
+                </p>
+              </div>
+              <div class="bg-violet-500/10 rounded-lg p-4 border border-violet-500/20">
+                <p class="font-medium text-violet-300 text-sm mb-1">Context Store</p>
+                <p class="text-xs text-white/50">
+                  <span data-lang-ja>短期記憶・進行中の文脈</span>
+                  <span data-lang-en>Short-term memory & context</span>
+                </p>
+              </div>
+              <div class="bg-violet-500/10 rounded-lg p-4 border border-violet-500/20">
+                <p class="font-medium text-violet-300 text-sm mb-1">KPI Store</p>
+                <p class="text-xs text-white/50">
+                  <span data-lang-ja>目標と現状のギャップ</span>
+                  <span data-lang-en>Goals vs. current state</span>
+                </p>
+              </div>
+            </div>
+
+            <div class="mt-4 p-3 bg-violet-500/5 rounded-lg border border-violet-500/10">
+              <p class="text-xs text-violet-300/70 text-center">
+                <span data-lang-ja>↑ 全レイヤーがアクセス</span>
+                <span data-lang-en>↑ All layers access this</span>
+              </p>
+            </div>
+          </div>
+
+          <!-- Arrow -->
+          <div class="flex items-center">
+            <svg class="w-8 h-8 text-white/30 flow-arrow" style="animation-delay: 0.3s" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+            </svg>
+          </div>
+
+          <!-- PROCESSING LAYER -->
+          <div class="layer-card glass-card rounded-2xl p-6 w-72 border-t-4 border-pink-500">
+            <div class="flex items-center gap-3 mb-4">
+              <div class="w-10 h-10 rounded-lg bg-pink-500/20 flex items-center justify-center">
+                <svg class="w-5 h-5 text-pink-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                </svg>
+              </div>
+              <div>
+                <h3 class="font-bold text-pink-300">PROCESSING</h3>
+                <p class="text-xs text-white/50">
+                  <span data-lang-ja>戦略 & 実行</span>
+                  <span data-lang-en>Strategy & Execution</span>
+                </p>
+              </div>
+            </div>
+
+            <div class="space-y-3">
+              <div class="bg-pink-500/10 rounded-lg p-4 border border-pink-500/20">
+                <div class="flex items-center gap-2 mb-2">
+                  <span class="text-xs bg-pink-500/30 text-pink-300 px-2 py-0.5 rounded-full">WHAT</span>
+                </div>
+                <p class="font-medium text-pink-300 text-sm mb-1">Strategy Agent</p>
+                <p class="text-xs text-white/50">
+                  <span data-lang-ja>KPIと記憶を参照し<br>「何をするか」を決定</span>
+                  <span data-lang-en">References KPIs & memory<br>Decides "what to do"</span>
+                </p>
+              </div>
+
+              <div class="flex justify-center">
+                <svg class="w-4 h-4 text-white/20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
+                </svg>
+              </div>
+
+              <div class="bg-orange-500/10 rounded-lg p-4 border border-orange-500/20">
+                <div class="flex items-center gap-2 mb-2">
+                  <span class="text-xs bg-orange-500/30 text-orange-300 px-2 py-0.5 rounded-full">HOW</span>
+                </div>
+                <p class="font-medium text-orange-300 text-sm mb-1">Execution Agent</p>
+                <p class="text-xs text-white/50">
+                  <span data-lang-ja>指示に基づいて<br>成果物を生成</span>
+                  <span data-lang-en>Generates deliverables<br>based on instructions</span>
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Arrow -->
+          <div class="flex items-center">
+            <svg class="w-8 h-8 text-white/30 flow-arrow" style="animation-delay: 0.6s" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+            </svg>
+          </div>
+
+          <!-- EVALUATION LAYER -->
+          <div class="layer-card glass-card rounded-2xl p-6 w-72 border-t-4 border-emerald-500">
+            <div class="flex items-center gap-3 mb-4">
+              <div class="w-10 h-10 rounded-lg bg-emerald-500/20 flex items-center justify-center">
+                <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+              </div>
+              <div>
+                <h3 class="font-bold text-emerald-300">EVALUATION</h3>
+                <p class="text-xs text-white/50">
+                  <span data-lang-ja>品質評価</span>
+                  <span data-lang-en>Quality Assurance</span>
+                </p>
+              </div>
+            </div>
+
+            <div class="space-y-3">
+              <div class="bg-emerald-500/10 rounded-lg p-4 border border-emerald-500/20">
+                <div class="flex items-center gap-2 mb-2">
+                  <span class="text-xs bg-emerald-500/30 text-emerald-300 px-2 py-0.5 rounded-full">Step 1</span>
+                </div>
+                <p class="font-medium text-emerald-300 text-sm mb-1">AI Critic</p>
+                <p class="text-xs text-white/50">
+                  <span data-lang-ja>自動品質チェック<br>NGなら差し戻し</span>
+                  <span data-lang-en">Auto quality check<br>Auto-reject if failed</span>
+                </p>
+              </div>
+
+              <div class="flex justify-center">
+                <svg class="w-4 h-4 text-white/20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
+                </svg>
+              </div>
+
+              <div class="bg-emerald-500/10 rounded-lg p-4 border border-emerald-500/20">
+                <div class="flex items-center gap-2 mb-2">
+                  <span class="text-xs bg-emerald-500/30 text-emerald-300 px-2 py-0.5 rounded-full">Step 2</span>
+                </div>
+                <p class="font-medium text-emerald-300 text-sm mb-1">Human-in-the-Loop</p>
+                <p class="text-xs text-white/50">
+                  <span data-lang-ja>人間が最終確認<br>FBは記憶に蓄積</span>
+                  <span data-lang-en">Human final review<br>Feedback to memory</span>
+                </p>
+              </div>
+            </div>
+
+            <div class="mt-4 p-3 bg-emerald-500/5 rounded-lg border border-emerald-500/10">
+              <p class="text-xs text-emerald-300/70 text-center">
+                <span data-lang-ja>→ Memory へ学習データ保存</span>
+                <span data-lang-en">→ Save to Memory as training data</span>
+              </p>
+            </div>
+          </div>
+
+          <!-- Arrow -->
+          <div class="flex items-center">
+            <svg class="w-8 h-8 text-white/30 flow-arrow" style="animation-delay: 0.9s" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+            </svg>
+          </div>
+
+          <!-- OUTPUT LAYER -->
+          <div class="layer-card glass-card rounded-2xl p-6 w-72 border-t-4 border-cyan-500">
+            <div class="flex items-center gap-3 mb-4">
+              <div class="w-10 h-10 rounded-lg bg-cyan-500/20 flex items-center justify-center">
+                <svg class="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+                </svg>
+              </div>
+              <div>
+                <h3 class="font-bold text-cyan-300">OUTPUT</h3>
+                <p class="text-xs text-white/50">
+                  <span data-lang-ja>外部へデプロイ</span>
+                  <span data-lang-en">Deploy to External</span>
+                </p>
+              </div>
+            </div>
+
+            <div class="space-y-3">
+              <!-- 通知 -->
+              <div class="bg-white/5 rounded-lg p-3">
+                <p class="text-xs text-white/40 mb-2">
+                  <span data-lang-ja>🔔 通知・報告</span>
+                  <span data-lang-en">🔔 Notifications</span>
+                </p>
+                <div class="flex gap-2 flex-wrap">
+                  <span class="tool-icon text-xs bg-white/10 px-2 py-1 rounded">Slack</span>
+                  <span class="tool-icon text-xs bg-white/10 px-2 py-1 rounded">Teams</span>
+                  <span class="tool-icon text-xs bg-white/10 px-2 py-1 rounded">Email</span>
+                </div>
+              </div>
+
+              <!-- コンテンツ -->
+              <div class="bg-white/5 rounded-lg p-3">
+                <p class="text-xs text-white/40 mb-2">
+                  <span data-lang-ja>📄 コンテンツ公開</span>
+                  <span data-lang-en">📄 Content Publishing</span>
+                </p>
+                <div class="flex gap-2 flex-wrap">
+                  <span class="tool-icon text-xs bg-white/10 px-2 py-1 rounded">CMS</span>
+                  <span class="tool-icon text-xs bg-white/10 px-2 py-1 rounded">Notion</span>
+                  <span class="tool-icon text-xs bg-white/10 px-2 py-1 rounded">WordPress</span>
+                </div>
+              </div>
+
+              <!-- SNS -->
+              <div class="bg-white/5 rounded-lg p-3">
+                <p class="text-xs text-white/40 mb-2">
+                  <span data-lang-ja>📱 SNS投稿</span>
+                  <span data-lang-en">📱 Social Media</span>
+                </p>
+                <div class="flex gap-2 flex-wrap">
+                  <span class="tool-icon text-xs bg-white/10 px-2 py-1 rounded">X</span>
+                  <span class="tool-icon text-xs bg-white/10 px-2 py-1 rounded">LinkedIn</span>
+                </div>
+              </div>
+
+              <!-- 開発 -->
+              <div class="bg-white/5 rounded-lg p-3">
+                <p class="text-xs text-white/40 mb-2">
+                  <span data-lang-ja>🚀 開発・デプロイ</span>
+                  <span data-lang-en">🚀 Dev & Deploy</span>
+                </p>
+                <div class="flex gap-2 flex-wrap">
+                  <span class="tool-icon text-xs bg-white/10 px-2 py-1 rounded">GitHub</span>
+                  <span class="tool-icon text-xs bg-white/10 px-2 py-1 rounded">Vercel</span>
+                </div>
+              </div>
+
+              <!-- データ更新 -->
+              <div class="bg-white/5 rounded-lg p-3">
+                <p class="text-xs text-white/40 mb-2">
+                  <span data-lang-ja>🔄 データ更新</span>
+                  <span data-lang-en">🔄 Data Update</span>
+                </p>
+                <div class="flex gap-2 flex-wrap">
+                  <span class="tool-icon text-xs bg-white/10 px-2 py-1 rounded">Salesforce</span>
+                  <span class="tool-icon text-xs bg-white/10 px-2 py-1 rounded">HubSpot</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Flow description -->
+      <div class="mt-12 text-center reveal">
+        <p class="text-white/40 text-sm">
+          <span data-lang-ja>← 横スクロールで全体を確認できます →</span>
+          <span data-lang-en">← Scroll horizontally to see the full flow →</span>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Principles Section -->
+  <section id="principles" class="py-24 px-6">
+    <div class="max-w-6xl mx-auto">
+      <div class="text-center mb-16 reveal">
+        <h2 class="text-3xl md:text-5xl font-bold mb-4">
+          <span class="text-gradient-warm">
+            <span data-lang-ja>3つの原則</span>
+            <span data-lang-en">3 Principles</span>
+          </span>
+        </h2>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-8">
+        <div class="glass-card rounded-2xl p-8 reveal">
+          <div class="w-14 h-14 rounded-xl bg-violet-500/20 flex items-center justify-center mb-6">
+            <svg class="w-7 h-7 text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+            </svg>
+          </div>
+          <h3 class="text-2xl font-bold mb-4">
+            <span data-lang-ja>記憶は財産</span>
+            <span data-lang-en">Memory is Asset</span>
+          </h3>
+          <p class="text-white/60">
+            <span data-lang-ja>退職しても、組織改編があっても、知見は失われない。組織の記憶が資産として蓄積される。</span>
+            <span data-lang-en">Knowledge persists through departures and reorganizations. Organizational memory accumulates as an asset.</span>
+          </p>
+        </div>
+
+        <div class="glass-card rounded-2xl p-8 reveal">
+          <div class="w-14 h-14 rounded-xl bg-pink-500/20 flex items-center justify-center mb-6">
+            <svg class="w-7 h-7 text-pink-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+            </svg>
+          </div>
+          <h3 class="text-2xl font-bold mb-4">
+            <span data-lang-ja>AIは手足</span>
+            <span data-lang-en">AI as Extension</span>
+          </h3>
+          <p class="text-white/60">
+            <span data-lang-ja>AIが戦略を決め、人間が実行するのではない。人間が方向性を決め、AIが実行する。判断は常に人間。</span>
+            <span data-lang-en">AI doesn't decide strategy while humans execute. Humans set direction, AI executes. Judgment is always human.</span>
+          </p>
+        </div>
+
+        <div class="glass-card rounded-2xl p-8 reveal">
+          <div class="w-14 h-14 rounded-xl bg-emerald-500/20 flex items-center justify-center mb-6">
+            <svg class="w-7 h-7 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+            </svg>
+          </div>
+          <h3 class="text-2xl font-bold mb-4">
+            <span data-lang-ja>共に育つ</span>
+            <span data-lang-en">Grow Together</span>
+          </h3>
+          <p class="text-white/60">
+            <span data-lang-ja>人間のフィードバックがAIを育て、育ったAIが組織を強くする。教育と成長の循環。</span>
+            <span data-lang-en">Human feedback trains AI, trained AI strengthens the organization. A cycle of education and growth.</span>
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="py-24 px-6">
+    <div class="max-w-4xl mx-auto text-center reveal">
+      <div class="glass-card rounded-3xl p-12 md:p-16 relative overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-br from-violet-500/5 via-pink-500/5 to-orange-500/5"></div>
+        <div class="relative z-10">
+          <h2 class="text-3xl md:text-4xl font-bold mb-6">
+            <span data-lang-ja>組織を進化させる準備はできていますか？</span>
+            <span data-lang-en">Ready to evolve your organization?</span>
+          </h2>
+          <p class="text-white/60 text-lg mb-8 max-w-2xl mx-auto">
+            <span data-lang-ja>Neural Organizationは、単なるAIツールの導入ではありません。<br>組織全体が「学習する生命体」へと進化するためのフレームワークです。</span>
+            <span data-lang-en">Neural Organization is not just about adopting AI tools.<br>It's a framework for evolving your entire organization into a "learning organism".</span>
+          </p>
+          <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <a href="#" class="px-8 py-4 bg-gradient-to-r from-violet-500 to-pink-500 rounded-full font-semibold hover:opacity-90 transition-opacity">
+              <span data-lang-ja>詳細資料をダウンロード</span>
+              <span data-lang-en">Download Whitepaper</span>
+            </a>
+            <a href="#" class="px-8 py-4 bg-white/10 border border-white/20 rounded-full font-semibold hover:bg-white/15 transition-colors">
+              <span data-lang-ja>お問い合わせ</span>
+              <span data-lang-en">Contact Us</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="py-12 px-6 border-t border-white/10">
+    <div class="max-w-6xl mx-auto text-center">
+      <p class="text-white/40 text-sm">
+        Neural Organization v1.0 —
+        <span data-lang-ja>記憶を持ち、戦略に基づいて動き、人と共に学ぶ組織</span>
+        <span data-lang-en">An organization that remembers, acts on strategy, and learns with people</span>
+      </p>
+    </div>
+  </footer>
+
+  <script>
+    // Language switching
+    function setLang(lang) {
+      document.documentElement.lang = lang;
+      document.getElementById('lang-ja').classList.toggle('active', lang === 'ja');
+      document.getElementById('lang-en').classList.toggle('active', lang === 'en');
+      localStorage.setItem('lang', lang);
+    }
+
+    // Initialize language from localStorage or browser
+    const savedLang = localStorage.getItem('lang') || (navigator.language.startsWith('ja') ? 'ja' : 'en');
+    setLang(savedLang);
+
+    // Scroll reveal
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    // Smooth scroll
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+  </script>
+</body>
+</html>
