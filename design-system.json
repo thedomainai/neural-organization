@@ -1,0 +1,379 @@
+{
+  "$schema": "https://design-tokens.org/schema.json",
+  "name": "Neural Organization Design System",
+  "version": "1.1.0",
+  "description": "Design tokens for Neural Organization - AI時代の企業アーキテクチャ",
+
+  "colors": {
+    "primary": {
+      "$description": "Primary color scale (Indigo) - HSL base: 239°, 84%, 67%",
+      "50":  { "value": "#eef2ff", "hsl": "hsl(239, 100%, 97%)" },
+      "100": { "value": "#e0e7ff", "hsl": "hsl(239, 93%, 94%)" },
+      "200": { "value": "#c7d2fe", "hsl": "hsl(239, 94%, 89%)" },
+      "300": { "value": "#a5b4fc", "hsl": "hsl(239, 93%, 82%)" },
+      "400": { "value": "#818cf8", "hsl": "hsl(239, 90%, 74%)" },
+      "500": { "value": "#6366f1", "hsl": "hsl(239, 84%, 67%)", "$description": "Base primary" },
+      "600": { "value": "#4f46e5", "hsl": "hsl(243, 75%, 59%)" },
+      "700": { "value": "#4338ca", "hsl": "hsl(245, 58%, 51%)" },
+      "800": { "value": "#3730a3", "hsl": "hsl(244, 55%, 41%)" },
+      "900": { "value": "#312e81", "hsl": "hsl(242, 47%, 34%)" },
+      "950": { "value": "#1e1b4b", "hsl": "hsl(244, 47%, 20%)" }
+    },
+
+    "secondary": {
+      "$description": "Secondary color scale (Violet) - HSL base: 258°, 90%, 66%",
+      "50":  { "value": "#f5f3ff", "hsl": "hsl(258, 100%, 98%)" },
+      "100": { "value": "#ede9fe", "hsl": "hsl(258, 90%, 96%)" },
+      "200": { "value": "#ddd6fe", "hsl": "hsl(258, 90%, 92%)" },
+      "300": { "value": "#c4b5fd", "hsl": "hsl(258, 90%, 85%)" },
+      "400": { "value": "#a78bfa", "hsl": "hsl(258, 90%, 76%)" },
+      "500": { "value": "#8b5cf6", "hsl": "hsl(258, 90%, 66%)", "$description": "Base secondary" },
+      "600": { "value": "#7c3aed", "hsl": "hsl(262, 83%, 58%)" },
+      "700": { "value": "#6d28d9", "hsl": "hsl(263, 70%, 50%)" },
+      "800": { "value": "#5b21b6", "hsl": "hsl(263, 69%, 42%)" },
+      "900": { "value": "#4c1d95", "hsl": "hsl(263, 67%, 35%)" },
+      "950": { "value": "#2e1065", "hsl": "hsl(264, 71%, 23%)" }
+    },
+
+    "layer": {
+      "$description": "5-layer architecture - derived from primary/secondary scales",
+      "input": {
+        "value": "{colors.primary.600}",
+        "resolved": "#4f46e5",
+        "name": "Input Layer",
+        "description": "社内データの収集"
+      },
+      "memory": {
+        "value": "{colors.primary.500}",
+        "resolved": "#6366f1",
+        "name": "Memory Layer",
+        "description": "組織の記憶 & ナレッジ"
+      },
+      "strategy": {
+        "value": "{colors.secondary.500}",
+        "resolved": "#8b5cf6",
+        "name": "Strategy Layer",
+        "description": "戦略立案（WHAT）"
+      },
+      "execution": {
+        "value": "{colors.secondary.400}",
+        "resolved": "#a78bfa",
+        "name": "Execution Layer",
+        "description": "タスク実行（HOW）"
+      },
+      "evaluation": {
+        "value": "{colors.secondary.300}",
+        "resolved": "#c4b5fd",
+        "name": "Evaluation Layer",
+        "description": "品質評価 & フィードバック"
+      },
+      "output": {
+        "value": "{colors.primary.300}",
+        "resolved": "#a5b4fc",
+        "name": "Output Layer",
+        "description": "外部システムへのデプロイ"
+      }
+    },
+
+    "background": {
+      "base": {
+        "value": "#0a0a0f",
+        "description": "Darkest background"
+      },
+      "elevated": {
+        "value": "#111118",
+        "description": "Slightly elevated surface"
+      },
+      "subtle": {
+        "value": "#16161f",
+        "description": "Subtle elevation"
+      },
+      "gradient": {
+        "value": "linear-gradient(180deg, #0a0a0f 0%, #111118 100%)",
+        "description": "Main page background gradient"
+      }
+    },
+
+    "surface": {
+      "glass": {
+        "background": "rgba(255, 255, 255, 0.02)",
+        "border": "rgba(255, 255, 255, 0.08)",
+        "blur": "20px",
+        "description": "Glassmorphism card style"
+      },
+      "glassHover": {
+        "background": "rgba(255, 255, 255, 0.05)",
+        "description": "Glass surface on hover"
+      },
+      "subtle": {
+        "value": "rgba(255, 255, 255, 0.05)",
+        "description": "Subtle background for nested elements"
+      }
+    },
+
+    "text": {
+      "primary": {
+        "value": "#ffffff",
+        "description": "Primary text - 100%"
+      },
+      "secondary": {
+        "value": "rgba(255, 255, 255, 0.7)",
+        "description": "Secondary text - 70%"
+      },
+      "muted": {
+        "value": "rgba(255, 255, 255, 0.5)",
+        "description": "Muted/subtitle text - 50%"
+      },
+      "subtle": {
+        "value": "rgba(255, 255, 255, 0.4)",
+        "description": "Subtle/caption text - 40%"
+      },
+      "disabled": {
+        "value": "rgba(255, 255, 255, 0.25)",
+        "description": "Disabled text - 25%"
+      }
+    },
+
+    "gradient": {
+      "brand": {
+        "value": "linear-gradient(135deg, {colors.primary.400} 0%, {colors.secondary.600} 50%, {colors.secondary.400} 100%)",
+        "resolved": "linear-gradient(135deg, #818cf8 0%, #7c3aed 50%, #a78bfa 100%)",
+        "description": "Brand gradient for headings"
+      },
+      "cta": {
+        "value": "linear-gradient(to right, {colors.primary.500}, {colors.secondary.500})",
+        "resolved": "linear-gradient(to right, #6366f1, #8b5cf6)",
+        "description": "CTA button gradient"
+      },
+      "glow": {
+        "value": "radial-gradient(circle, rgba(139, 92, 246, 0.08) 0%, transparent 60%)",
+        "description": "Background glow effect"
+      }
+    },
+
+    "semantic": {
+      "success": {
+        "value": "#10b981",
+        "description": "Success state (Emerald)"
+      },
+      "warning": {
+        "value": "#f59e0b",
+        "description": "Warning state (Amber)"
+      },
+      "error": {
+        "value": "#ef4444",
+        "description": "Error state (Red)"
+      },
+      "info": {
+        "value": "#06b6d4",
+        "description": "Info state (Cyan)"
+      }
+    }
+  },
+
+  "typography": {
+    "fontFamily": {
+      "sans": {
+        "value": "'Inter', 'Noto Sans JP', sans-serif",
+        "description": "Primary font stack - UI, body text"
+      },
+      "display": {
+        "value": "'Inter', 'Noto Sans JP', sans-serif",
+        "description": "Display/heading font"
+      },
+      "mono": {
+        "value": "'JetBrains Mono', 'Noto Sans JP', monospace",
+        "description": "Terminal / code font"
+      }
+    },
+
+    "fontSize": {
+      "xs":   { "value": "0.75rem",  "px": "12px", "lineHeight": "1rem" },
+      "sm":   { "value": "0.875rem", "px": "14px", "lineHeight": "1.25rem" },
+      "base": { "value": "1rem",     "px": "16px", "lineHeight": "1.5rem" },
+      "lg":   { "value": "1.125rem", "px": "18px", "lineHeight": "1.75rem" },
+      "xl":   { "value": "1.25rem",  "px": "20px", "lineHeight": "1.75rem" },
+      "2xl":  { "value": "1.5rem",   "px": "24px", "lineHeight": "2rem" },
+      "3xl":  { "value": "1.875rem", "px": "30px", "lineHeight": "2.25rem" },
+      "4xl":  { "value": "2.25rem",  "px": "36px", "lineHeight": "2.5rem" },
+      "5xl":  { "value": "3rem",     "px": "48px", "lineHeight": "1.2" },
+      "6xl":  { "value": "3.75rem",  "px": "60px", "lineHeight": "1.1" },
+      "7xl":  { "value": "4.5rem",   "px": "72px", "lineHeight": "1.1" }
+    },
+
+    "fontWeight": {
+      "light":    { "value": 300 },
+      "normal":   { "value": 400 },
+      "medium":   { "value": 500 },
+      "semibold": { "value": 600 },
+      "bold":     { "value": 700 },
+      "black":    { "value": 900 }
+    },
+
+    "letterSpacing": {
+      "tighter": { "value": "-0.05em" },
+      "tight":   { "value": "-0.025em" },
+      "normal":  { "value": "0" },
+      "wide":    { "value": "0.025em" },
+      "wider":   { "value": "0.05em" },
+      "widest":  { "value": "0.3em", "description": "For taglines/labels" }
+    }
+  },
+
+  "spacing": {
+    "scale": {
+      "0":  "0",
+      "px": "1px",
+      "0.5": "0.125rem",
+      "1":  "0.25rem",
+      "1.5": "0.375rem",
+      "2":  "0.5rem",
+      "2.5": "0.625rem",
+      "3":  "0.75rem",
+      "3.5": "0.875rem",
+      "4":  "1rem",
+      "5":  "1.25rem",
+      "6":  "1.5rem",
+      "7":  "1.75rem",
+      "8":  "2rem",
+      "9":  "2.25rem",
+      "10": "2.5rem",
+      "11": "2.75rem",
+      "12": "3rem",
+      "14": "3.5rem",
+      "16": "4rem",
+      "20": "5rem",
+      "24": "6rem",
+      "28": "7rem",
+      "32": "8rem",
+      "36": "9rem",
+      "40": "10rem",
+      "44": "11rem",
+      "48": "12rem"
+    },
+    "section": {
+      "paddingY": "6rem",
+      "paddingX": "1.5rem"
+    },
+    "container": {
+      "maxWidth": {
+        "sm": "640px",
+        "md": "768px",
+        "lg": "1024px",
+        "xl": "1280px",
+        "2xl": "1536px"
+      }
+    }
+  },
+
+  "borderRadius": {
+    "none": "0",
+    "sm":   "0.125rem",
+    "default": "0.25rem",
+    "md":   "0.375rem",
+    "lg":   "0.5rem",
+    "xl":   "0.75rem",
+    "2xl":  "1rem",
+    "3xl":  "1.5rem",
+    "full": "9999px"
+  },
+
+  "shadow": {
+    "none": "none",
+    "glow": {
+      "sm": "0 0 20px rgba(99, 102, 241, 0.1)",
+      "md": "0 0 40px rgba(99, 102, 241, 0.15)",
+      "lg": "0 0 60px rgba(99, 102, 241, 0.2)"
+    }
+  },
+
+  "animation": {
+    "duration": {
+      "fast":   "150ms",
+      "normal": "300ms",
+      "slow":   "500ms",
+      "slower": "600ms"
+    },
+    "easing": {
+      "default": "ease",
+      "in":      "ease-in",
+      "out":     "ease-out",
+      "inOut":   "ease-in-out"
+    }
+  },
+
+  "components": {
+    "button": {
+      "primary": {
+        "background": "{colors.gradient.cta}",
+        "text": "#ffffff",
+        "borderRadius": "{borderRadius.full}",
+        "paddingX": "{spacing.scale.8}",
+        "paddingY": "{spacing.scale.4}",
+        "fontWeight": "{typography.fontWeight.semibold}"
+      },
+      "secondary": {
+        "background": "rgba(255, 255, 255, 0.1)",
+        "border": "1px solid rgba(255, 255, 255, 0.2)",
+        "text": "#ffffff",
+        "borderRadius": "{borderRadius.full}",
+        "paddingX": "{spacing.scale.8}",
+        "paddingY": "{spacing.scale.4}"
+      },
+      "ghost": {
+        "background": "transparent",
+        "text": "{colors.text.secondary}",
+        "hoverBackground": "rgba(255, 255, 255, 0.05)"
+      }
+    },
+
+    "card": {
+      "glass": {
+        "background": "{colors.surface.glass.background}",
+        "backdropFilter": "blur({colors.surface.glass.blur})",
+        "border": "1px solid {colors.surface.glass.border}",
+        "borderRadius": "{borderRadius.2xl}",
+        "padding": "{spacing.scale.6}"
+      },
+      "layer": {
+        "borderLeft": "3px solid",
+        "background": "rgba(255, 255, 255, 0.03)",
+        "borderRadius": "{borderRadius.xl}",
+        "padding": "{spacing.scale.3.5} {spacing.scale.4.5}"
+      }
+    },
+
+    "badge": {
+      "default": {
+        "background": "rgba(255, 255, 255, 0.1)",
+        "text": "{colors.text.secondary}",
+        "fontSize": "{typography.fontSize.xs}",
+        "paddingX": "{spacing.scale.2}",
+        "paddingY": "{spacing.scale.1}",
+        "borderRadius": "{borderRadius.default}"
+      }
+    },
+
+    "icon": {
+      "size": {
+        "sm": "1rem",
+        "md": "1.25rem",
+        "lg": "1.5rem",
+        "xl": "1.75rem"
+      },
+      "container": {
+        "sm": "2rem",
+        "md": "2.5rem",
+        "lg": "3.5rem"
+      }
+    }
+  },
+
+  "breakpoints": {
+    "sm":  "640px",
+    "md":  "768px",
+    "lg":  "1024px",
+    "xl":  "1280px",
+    "2xl": "1536px"
+  }
+}
