@@ -3,705 +3,1921 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Neural Organization</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <title>Agent Orchestration — Evolutionary Layered Architecture</title>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: {
-            'sans': ['Inter', 'Noto Sans JP', 'sans-serif'],
-          },
-          colors: {
-            'layer': {
-              'input': '#6366f1',
-              'memory': '#8b5cf6',
-              'processing': '#ec4899',
-              'evaluation': '#10b981',
-              'output': '#06b6d4',
-            }
-          }
-        }
-      }
-    }
-  </script>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
+    :root {
+      /* Base colors */
+      --bg-void: #050508;
+      --bg-deep: #0a0a0f;
+      --bg-surface: #111118;
+      --bg-elevated: #1a1a24;
+
+      /* Text */
+      --text-primary: #ffffff;
+      --text-secondary: rgba(255, 255, 255, 0.7);
+      --text-muted: rgba(255, 255, 255, 0.5);
+      --text-subtle: rgba(255, 255, 255, 0.35);
+
+      /* Layer colors */
+      --layer-theory: #6366f1;    /* Indigo - Layer 1 Theory */
+      --layer-practice: #8b5cf6;  /* Violet - Layer 2 Practice */
+      --layer-evolution: #ec4899; /* Pink - Layer 3 Evolution */
+
+      /* Capability colors */
+      --cap-reasoning: #f97316;   /* Orange */
+      --cap-research: #06b6d4;    /* Cyan */
+      --cap-multimodal: #10b981;  /* Emerald */
+      --cap-implement: #6366f1;   /* Indigo */
+      --cap-qa: #f59e0b;          /* Amber */
+
+      /* Accent */
+      --accent-primary: #6366f1;
+      --accent-glow: rgba(99, 102, 241, 0.4);
+
+      /* Glass */
+      --glass-bg: rgba(255, 255, 255, 0.02);
+      --glass-border: rgba(255, 255, 255, 0.06);
+      --glass-border-hover: rgba(255, 255, 255, 0.12);
+
+      /* Fonts */
+      --font-display: 'Instrument Serif', Georgia, serif;
+      --font-body: 'DM Sans', system-ui, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      font-size: 16px;
+    }
 
     body {
-      background: linear-gradient(180deg, #0a0a0f 0%, #111118 100%);
-      min-height: 100vh;
+      font-family: var(--font-body);
+      background: var(--bg-void);
+      color: var(--text-primary);
+      line-height: 1.6;
+      overflow-x: hidden;
     }
 
-    .text-gradient {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg-deep); }
+    ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.2); }
 
-    .text-gradient-warm {
-      background: linear-gradient(135deg, #f093fb 0%, #f5576c 50%, #f97316 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    .glass-card {
-      background: rgba(255, 255, 255, 0.02);
-      backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-    }
-
-    .reveal {
-      opacity: 0;
-      transform: translateY(20px);
-      transition: all 0.6s ease;
-    }
-
-    .reveal.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    .scroll-indicator {
-      animation: bounce 2s infinite;
-    }
-
-    @keyframes bounce {
-      0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
-      40% { transform: translateY(-8px); }
-      60% { transform: translateY(-4px); }
-    }
-
-    /* Language switcher */
-    .lang-switch {
-      transition: all 0.2s ease;
-    }
-    .lang-switch.active {
-      background: rgba(255, 255, 255, 0.15);
-      color: white;
-    }
-
-    /* Hide inactive language */
+    /* Language toggle */
     [data-lang-ja] { display: none; }
     [data-lang-en] { display: none; }
     html[lang="ja"] [data-lang-ja] { display: inline; }
     html[lang="en"] [data-lang-en] { display: inline; }
 
-    /* Flow animation */
-    .flow-arrow {
-      animation: flowPulse 2s ease-in-out infinite;
-    }
-    @keyframes flowPulse {
-      0%, 100% { opacity: 0.4; }
-      50% { opacity: 1; }
+    /* ===== HEADER ===== */
+    .site-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      padding: 1rem 2rem;
+      background: linear-gradient(to bottom, var(--bg-void) 0%, transparent 100%);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
 
-    /* Tool icon hover */
-    .tool-icon {
+    .logo {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+    }
+
+    .lang-switch {
+      display: flex;
+      gap: 0.25rem;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 100px;
+      padding: 0.25rem;
+    }
+
+    .lang-btn {
+      background: none;
+      border: none;
+      padding: 0.375rem 0.75rem;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      font-weight: 500;
+      color: var(--text-subtle);
+      border-radius: 100px;
+      cursor: pointer;
       transition: all 0.2s ease;
     }
-    .tool-icon:hover {
-      transform: scale(1.1);
+
+    .lang-btn.active {
       background: rgba(255, 255, 255, 0.1);
+      color: var(--text-primary);
     }
 
-    /* Layer card */
-    .layer-card {
+    .lang-btn:hover:not(.active) {
+      color: var(--text-secondary);
+    }
+
+    /* ===== NAVIGATION ===== */
+    .nav-sidebar {
+      position: fixed;
+      left: 2rem;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 90;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .nav-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--glass-border);
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .nav-dot::before {
+      content: attr(data-label);
+      position: absolute;
+      left: 1.5rem;
+      top: 50%;
+      transform: translateY(-50%);
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      color: var(--text-subtle);
+      white-space: nowrap;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      pointer-events: none;
+    }
+
+    .nav-dot:hover::before,
+    .nav-dot.active::before {
+      opacity: 1;
+    }
+
+    .nav-dot.active {
+      background: var(--accent-primary);
+      box-shadow: 0 0 12px var(--accent-glow);
+    }
+
+    .nav-dot:hover:not(.active) {
+      background: var(--text-muted);
+    }
+
+    /* ===== SECTIONS ===== */
+    section {
+      min-height: 100vh;
+      padding: 8rem 4rem;
+      position: relative;
+    }
+
+    .section-container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    /* ===== HERO ===== */
+    .hero {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .hero-grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(99, 102, 241, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(99, 102, 241, 0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+      mask-image: radial-gradient(ellipse 80% 60% at 50% 50%, black 20%, transparent 70%);
+    }
+
+    .hero-glow {
+      position: absolute;
+      top: 30%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 800px;
+      height: 600px;
+      background: radial-gradient(ellipse, var(--accent-glow) 0%, transparent 60%);
+      opacity: 0.3;
+      filter: blur(80px);
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      max-width: 900px;
+    }
+
+    .hero-label {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--accent-primary);
+      margin-bottom: 1.5rem;
+      opacity: 0;
+      animation: fadeUp 0.8s ease 0.2s forwards;
+    }
+
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: clamp(3rem, 8vw, 5.5rem);
+      font-weight: 400;
+      line-height: 1.1;
+      margin-bottom: 1.5rem;
+      opacity: 0;
+      animation: fadeUp 0.8s ease 0.4s forwards;
+    }
+
+    .hero-title em {
+      font-style: italic;
+      background: linear-gradient(135deg, #818cf8 0%, #c084fc 50%, #f472b6 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-subtitle {
+      font-size: 1.25rem;
+      font-weight: 300;
+      color: var(--text-secondary);
+      max-width: 650px;
+      margin: 0 auto 3rem;
+      opacity: 0;
+      animation: fadeUp 0.8s ease 0.6s forwards;
+    }
+
+    .hero-cta {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      opacity: 0;
+      animation: fadeUp 0.8s ease 0.8s forwards;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.875rem 1.75rem;
+      font-family: var(--font-body);
+      font-size: 0.875rem;
+      font-weight: 500;
+      border-radius: 100px;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background: var(--text-primary);
+      color: var(--bg-void);
+      border: none;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(255, 255, 255, 0.2);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--text-secondary);
+      border: 1px solid var(--glass-border);
+    }
+
+    .btn-ghost:hover {
+      border-color: var(--text-muted);
+      color: var(--text-primary);
+    }
+
+    .scroll-indicator {
+      position: absolute;
+      bottom: 3rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--text-subtle);
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      opacity: 0;
+      animation: fadeUp 0.8s ease 1s forwards;
+    }
+
+    .scroll-line {
+      width: 1px;
+      height: 40px;
+      background: linear-gradient(to bottom, var(--text-subtle), transparent);
+      animation: scrollPulse 2s ease infinite;
+    }
+
+    @keyframes scrollPulse {
+      0%, 100% { opacity: 0.3; transform: scaleY(1); }
+      50% { opacity: 1; transform: scaleY(1.2); }
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ===== OVERVIEW SECTION ===== */
+    .overview {
+      background: var(--bg-deep);
+    }
+
+    .section-header {
+      margin-bottom: 4rem;
+    }
+
+    .section-number {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      font-weight: 500;
+      color: var(--accent-primary);
+      letter-spacing: 0.2em;
+      margin-bottom: 1rem;
+    }
+
+    .section-title {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 400;
+      margin-bottom: 1rem;
+    }
+
+    .section-lead {
+      font-size: 1.125rem;
+      color: var(--text-secondary);
+      max-width: 600px;
+    }
+
+    .overview-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: start;
+    }
+
+    .overview-main {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    .overview-text {
+      font-size: 1.125rem;
+      color: var(--text-secondary);
+      line-height: 1.8;
+    }
+
+    .overview-text strong {
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+
+    .key-points {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      margin-top: 1rem;
+    }
+
+    .key-point {
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+    }
+
+    .key-point-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      color: var(--accent-primary);
+    }
+
+    .key-point-content h4 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+
+    .key-point-content p {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+    }
+
+    /* Premise Cards */
+    .premise-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 0.75rem;
+    }
+
+    .premise-card {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 1rem;
       transition: all 0.3s ease;
     }
+
+    .premise-card:hover {
+      border-color: var(--glass-border-hover);
+      transform: translateY(-2px);
+    }
+
+    .premise-id {
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      color: var(--accent-primary);
+      margin-bottom: 0.5rem;
+    }
+
+    .premise-title {
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+
+    .premise-desc {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    /* Component Diagram */
+    .component-diagram {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .component-diagram::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent-primary), transparent);
+      opacity: 0.5;
+    }
+
+    .diagram-title {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      color: var(--text-subtle);
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+    }
+
+    .flow-diagram {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .flow-row {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .flow-box {
+      padding: 0.5rem 0.875rem;
+      background: rgba(99, 102, 241, 0.1);
+      border: 1px solid rgba(99, 102, 241, 0.2);
+      border-radius: 8px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .flow-box.orchestrator {
+      background: rgba(99, 102, 241, 0.15);
+      border-color: rgba(99, 102, 241, 0.3);
+      color: var(--layer-theory);
+    }
+
+    .flow-box.agent {
+      background: rgba(249, 115, 22, 0.1);
+      border-color: rgba(249, 115, 22, 0.2);
+    }
+
+    .flow-arrow {
+      color: var(--text-subtle);
+      font-size: 0.8rem;
+    }
+
+    .flow-label {
+      font-size: 0.65rem;
+      color: var(--text-subtle);
+      margin-left: auto;
+      font-family: var(--font-mono);
+    }
+
+    /* ===== ARCHITECTURE SECTION ===== */
+    .architecture {
+      background: var(--bg-void);
+      position: relative;
+    }
+
+    .arch-content {
+      display: flex;
+      flex-direction: column;
+      gap: 4rem;
+    }
+
+    /* Three Layer Stack */
+    .layer-stack-container {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      padding: 3rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .layer-stack-container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent-primary), transparent);
+      opacity: 0.3;
+    }
+
+    .stack-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 2rem;
+    }
+
+    .stack-title {
+      font-family: var(--font-display);
+      font-size: 1.75rem;
+    }
+
+    .stack-badge {
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      color: var(--text-subtle);
+      padding: 0.375rem 0.75rem;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 100px;
+    }
+
+    .three-layers {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .layer-card {
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      gap: 1.5rem;
+      padding: 1.5rem;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 12px;
+      border-left: 4px solid;
+      transition: all 0.3s ease;
+    }
+
     .layer-card:hover {
+      background: rgba(255, 255, 255, 0.02);
+      transform: translateX(4px);
+    }
+
+    .layer-card[data-layer="1"] { border-color: var(--layer-theory); }
+    .layer-card[data-layer="2"] { border-color: var(--layer-practice); }
+    .layer-card[data-layer="3"] { border-color: var(--layer-evolution); }
+
+    .layer-badge {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.375rem;
+    }
+
+    .layer-num {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      font-weight: 500;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+    }
+
+    .layer-card[data-layer="1"] .layer-num { background: rgba(99, 102, 241, 0.15); color: var(--layer-theory); }
+    .layer-card[data-layer="2"] .layer-num { background: rgba(139, 92, 246, 0.15); color: var(--layer-practice); }
+    .layer-card[data-layer="3"] .layer-num { background: rgba(236, 72, 153, 0.15); color: var(--layer-evolution); }
+
+    .layer-name {
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    .layer-body {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .layer-desc {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+    }
+
+    .layer-items {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-top: 0.25rem;
+    }
+
+    .layer-item {
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      padding: 0.25rem 0.5rem;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 4px;
+      color: var(--text-subtle);
+    }
+
+    /* Pipeline Visualization */
+    .pipeline-container {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 2rem;
+    }
+
+    .pipeline-title {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      color: var(--text-subtle);
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+    }
+
+    .pipeline-flow {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .pipeline-stage {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.375rem;
+      padding: 1rem 1.25rem;
+      background: rgba(99, 102, 241, 0.08);
+      border: 1px solid rgba(99, 102, 241, 0.2);
+      border-radius: 10px;
+      min-width: 100px;
+    }
+
+    .stage-name {
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .stage-desc {
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      text-align: center;
+    }
+
+    .pipeline-arrow {
+      color: var(--text-subtle);
+      font-size: 1rem;
+    }
+
+    /* ===== DEEP DIVE SECTION ===== */
+    .deep-dive {
+      background: var(--bg-deep);
+    }
+
+    .deep-dive-content {
+      display: flex;
+      flex-direction: column;
+      gap: 6rem;
+    }
+
+    .topic-block {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: start;
+    }
+
+    .topic-block.reverse {
+      direction: rtl;
+    }
+
+    .topic-block.reverse > * {
+      direction: ltr;
+    }
+
+    .topic-header {
+      margin-bottom: 1.5rem;
+    }
+
+    .topic-label {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-bottom: 0.75rem;
+    }
+
+    .topic-label[data-color="axiom"] { color: var(--layer-theory); }
+    .topic-label[data-color="capability"] { color: var(--cap-reasoning); }
+    .topic-label[data-color="evolution"] { color: var(--layer-evolution); }
+    .topic-label[data-color="tradeoff"] { color: var(--cap-research); }
+
+    .topic-title {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    .topic-desc {
+      font-size: 1rem;
+      color: var(--text-secondary);
+      line-height: 1.8;
+    }
+
+    /* Axiom Cards */
+    .axiom-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .axiom-card {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 1.25rem;
+      border-left: 3px solid var(--layer-theory);
+      transition: all 0.3s ease;
+    }
+
+    .axiom-card:hover {
+      border-color: var(--glass-border-hover);
+      background: rgba(99, 102, 241, 0.03);
+    }
+
+    .axiom-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .axiom-num {
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      font-weight: 600;
+      padding: 0.25rem 0.5rem;
+      background: rgba(99, 102, 241, 0.15);
+      color: var(--layer-theory);
+      border-radius: 4px;
+    }
+
+    .axiom-name {
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .axiom-desc {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    /* Capability Grid */
+    .capability-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }
+
+    .capability-card {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 1.25rem;
+      transition: all 0.3s ease;
+    }
+
+    .capability-card:hover {
+      border-color: var(--glass-border-hover);
+      transform: translateY(-2px);
+    }
+
+    .capability-card.wide {
+      grid-column: span 2;
+    }
+
+    .cap-header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .cap-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      font-weight: 600;
+    }
+
+    .cap-icon[data-cap="C1"] { background: rgba(249, 115, 22, 0.15); color: var(--cap-reasoning); }
+    .cap-icon[data-cap="C2"] { background: rgba(99, 102, 241, 0.15); color: var(--cap-implement); }
+    .cap-icon[data-cap="C3"] { background: rgba(249, 115, 22, 0.15); color: var(--cap-reasoning); }
+    .cap-icon[data-cap="C4"] { background: rgba(6, 182, 212, 0.15); color: var(--cap-research); }
+    .cap-icon[data-cap="C5"] { background: rgba(6, 182, 212, 0.15); color: var(--cap-research); }
+    .cap-icon[data-cap="C6"] { background: rgba(16, 185, 129, 0.15); color: var(--cap-multimodal); }
+    .cap-icon[data-cap="C7"] { background: rgba(245, 158, 11, 0.15); color: var(--cap-qa); }
+
+    .cap-name {
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .cap-desc {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    .cap-tool {
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      color: var(--text-subtle);
+      margin-top: 0.5rem;
+      padding-top: 0.5rem;
+      border-top: 1px solid var(--glass-border);
+    }
+
+    /* Evolution Steps */
+    .evolution-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+    }
+
+    .evolution-card {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 1.25rem;
+      text-align: center;
+      transition: all 0.3s ease;
+      border-top: 3px solid var(--layer-evolution);
+    }
+
+    .evolution-card:hover {
       transform: translateY(-4px);
     }
 
-    /* Horizontal scroll for flow */
-    .flow-container {
-      overflow-x: auto;
-      scrollbar-width: thin;
-      scrollbar-color: rgba(255,255,255,0.2) transparent;
+    .evo-step {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      font-weight: 600;
+      color: var(--layer-evolution);
+      margin-bottom: 0.5rem;
     }
-    .flow-container::-webkit-scrollbar {
-      height: 6px;
+
+    .evo-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 0.375rem;
     }
-    .flow-container::-webkit-scrollbar-track {
-      background: transparent;
+
+    .evo-desc {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      line-height: 1.5;
     }
-    .flow-container::-webkit-scrollbar-thumb {
-      background: rgba(255,255,255,0.2);
-      border-radius: 3px;
+
+    /* Tradeoff Table */
+    .tradeoff-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .tradeoff-row {
+      display: grid;
+      grid-template-columns: 80px 1fr 1fr;
+      gap: 1rem;
+      padding: 1rem;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 10px;
+      transition: all 0.3s ease;
+    }
+
+    .tradeoff-row:hover {
+      border-color: var(--glass-border-hover);
+    }
+
+    .tradeoff-id {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: var(--cap-research);
+      padding: 0.25rem 0.5rem;
+      background: rgba(6, 182, 212, 0.1);
+      border-radius: 4px;
+      text-align: center;
+      height: fit-content;
+    }
+
+    .tradeoff-poles {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .pole-a, .pole-b {
+      font-size: 0.8rem;
+    }
+
+    .pole-a { color: var(--text-secondary); }
+    .pole-b { color: var(--text-muted); }
+
+    .tradeoff-name {
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    /* ===== FOOTER ===== */
+    .site-footer {
+      padding: 4rem;
+      background: var(--bg-void);
+      border-top: 1px solid var(--glass-border);
+    }
+
+    .footer-content {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-brand {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .footer-logo {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+    }
+
+    .footer-tagline {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .footer-meta {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      color: var(--text-subtle);
+      text-align: right;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 1024px) {
+      section {
+        padding: 6rem 2rem;
+      }
+
+      .overview-grid,
+      .topic-block {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+
+      .topic-block.reverse {
+        direction: ltr;
+      }
+
+      .premise-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .evolution-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .nav-sidebar {
+        display: none;
+      }
+
+      .layer-card {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .site-header {
+        padding: 1rem;
+      }
+
+      section {
+        padding: 4rem 1rem;
+      }
+
+      .hero-title {
+        font-size: 2.5rem;
+      }
+
+      .hero-cta {
+        flex-direction: column;
+      }
+
+      .premise-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .capability-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .capability-card.wide {
+        grid-column: span 1;
+      }
+
+      .tradeoff-row {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+
+      .pipeline-flow {
+        flex-direction: column;
+      }
+
+      .pipeline-arrow {
+        transform: rotate(90deg);
+      }
+
+      .footer-content {
+        flex-direction: column;
+        gap: 2rem;
+        text-align: center;
+      }
+
+      .footer-meta {
+        text-align: center;
+      }
     }
   </style>
 </head>
-<body class="text-white font-sans">
+<body>
 
-  <!-- Language Switcher (Fixed) -->
-  <div class="fixed top-6 right-6 z-50 flex gap-1 glass-card rounded-full p-1">
-    <button onclick="setLang('ja')" id="lang-ja" class="lang-switch active px-3 py-1.5 rounded-full text-sm font-medium text-white/70 hover:text-white">
-      JA
-    </button>
-    <button onclick="setLang('en')" id="lang-en" class="lang-switch px-3 py-1.5 rounded-full text-sm font-medium text-white/70 hover:text-white">
-      EN
-    </button>
-  </div>
+  <!-- Header -->
+  <header class="site-header">
+    <div class="logo">AGENT ORCHESTRATION</div>
+    <div class="lang-switch">
+      <button class="lang-btn active" id="lang-ja" onclick="setLang('ja')">JA</button>
+      <button class="lang-btn" id="lang-en" onclick="setLang('en')">EN</button>
+    </div>
+  </header>
 
-  <!-- Hero Section -->
-  <section class="min-h-screen flex flex-col items-center justify-center px-6 relative">
-    <div class="absolute inset-0 overflow-hidden pointer-events-none">
-      <div class="absolute top-1/3 left-1/4 w-96 h-96 bg-violet-500/5 rounded-full blur-3xl"></div>
-      <div class="absolute bottom-1/3 right-1/4 w-96 h-96 bg-indigo-500/5 rounded-full blur-3xl"></div>
+  <!-- Navigation Dots -->
+  <nav class="nav-sidebar">
+    <button class="nav-dot active" data-section="hero" data-label="Top"></button>
+    <button class="nav-dot" data-section="overview" data-label="Overview"></button>
+    <button class="nav-dot" data-section="architecture" data-label="Architecture"></button>
+    <button class="nav-dot" data-section="deep-dive" data-label="Deep Dive"></button>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero" id="hero">
+    <div class="hero-bg">
+      <div class="hero-grid"></div>
+      <div class="hero-glow"></div>
     </div>
 
-    <div class="text-center z-10 max-w-4xl">
-      <p class="text-indigo-400 text-sm tracking-[0.3em] uppercase mb-4 font-medium">
-        <span data-lang-ja>AI時代の企業アーキテクチャ</span>
-        <span data-lang-en>Enterprise Architecture for the AI Era</span>
+    <div class="hero-content">
+      <p class="hero-label">
+        <span data-lang-ja>マルチエージェントオーケストレーション</span>
+        <span data-lang-en>Multi-Agent Orchestration</span>
       </p>
-      <h1 class="text-5xl md:text-7xl font-bold mb-6 leading-tight">
-        <span class="text-gradient">Neural Organization</span>
+      <h1 class="hero-title">
+        <em>Evolutionary</em> Layered<br>Architecture
       </h1>
-      <p class="text-xl md:text-2xl text-white/60 font-light mb-4">
-        Complete Sync: Culture, Data, Strategy, Execution
+      <p class="hero-subtitle">
+        <span data-lang-ja>Claude Code Orchestra — 能力ベースの委譲、<br>自己進化するコンフィグ、ツール非依存の設計</span>
+        <span data-lang-en>Claude Code Orchestra — Capability-based delegation,<br>self-evolving config, tool-agnostic design</span>
       </p>
-      <p class="text-lg text-white/40 max-w-2xl mx-auto mb-12">
-        <span data-lang-ja>人類より優れたAIを人類のために活用する<br>次世代の企業経営アーキテクチャ</span>
-        <span data-lang-en>Harness superintelligent AI for humanity<br>Next-generation enterprise architecture</span>
-      </p>
-
-      <a href="#architecture" class="inline-flex items-center gap-2 px-8 py-4 bg-white/10 hover:bg-white/15 border border-white/20 rounded-full transition-all duration-300 group">
-        <span data-lang-ja>アーキテクチャを見る</span>
-        <span data-lang-en>Explore Architecture</span>
-        <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
-        </svg>
-      </a>
+      <div class="hero-cta">
+        <a href="#overview" class="btn btn-primary">
+          <span data-lang-ja>概要を見る</span>
+          <span data-lang-en>Explore</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
+        </a>
+        <a href="#architecture" class="btn btn-ghost">
+          <span data-lang-ja>アーキテクチャ</span>
+          <span data-lang-en>Architecture</span>
+        </a>
+      </div>
     </div>
 
-    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 scroll-indicator">
-      <svg class="w-6 h-6 text-white/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
-      </svg>
+    <div class="scroll-indicator">
+      <span>SCROLL</span>
+      <div class="scroll-line"></div>
     </div>
   </section>
 
-  <!-- Architecture Flow Section -->
-  <section id="architecture" class="py-24 px-6">
-    <div class="max-w-7xl mx-auto">
-      <div class="text-center mb-16 reveal">
-        <h2 class="text-3xl md:text-5xl font-bold mb-4">
-          <span class="text-gradient-warm">
-            <span data-lang-ja>データフローアーキテクチャ</span>
-            <span data-lang-en>Data Flow Architecture</span>
-          </span>
+  <!-- OVERVIEW -->
+  <section class="overview" id="overview">
+    <div class="section-container">
+      <div class="section-header">
+        <p class="section-number">01</p>
+        <h2 class="section-title">
+          <span data-lang-ja>概要</span>
+          <span data-lang-en>Overview</span>
         </h2>
-        <p class="text-white/50 text-lg max-w-2xl mx-auto">
-          <span data-lang-ja>御社の既存ツールからデータを収集し、AIが処理し、価値としてアウトプット</span>
-          <span data-lang-en>Collect data from your existing tools, process with AI, and output as value</span>
+        <p class="section-lead">
+          <span data-lang-ja>Claude Code Orchestraとは何か、何を解決するのか</span>
+          <span data-lang-en>What is Claude Code Orchestra and what problem does it solve</span>
         </p>
       </div>
 
-      <!-- Horizontal Flow -->
-      <div class="flow-container reveal">
-        <div class="flex gap-4 min-w-max pb-4">
+      <div class="overview-grid">
+        <div class="overview-main">
+          <p class="overview-text">
+            <span data-lang-ja>
+              <strong>Claude Code Orchestra (CCO)</strong> は、Claude Code をオーケストレーターとして配置し、
+              <strong>Codex CLI</strong>（深い推論）と <strong>Gemini CLI</strong>（リサーチ/大容量コンテキスト）に委譲するテンプレートです。
+              ユーザーは単一のインターフェースと対話し、複数エージェントの調整は隠蔽されます。
+            </span>
+            <span data-lang-en>
+              <strong>Claude Code Orchestra (CCO)</strong> positions Claude Code as an orchestrator,
+              delegating to <strong>Codex CLI</strong> (deep reasoning) and <strong>Gemini CLI</strong> (research/large context).
+              Users interact with a single interface while multi-agent coordination is hidden.
+            </span>
+          </p>
 
-          <!-- INPUT LAYER -->
-          <div class="layer-card glass-card rounded-2xl p-6 w-80 border-t-4 border-indigo-500">
-            <div class="flex items-center gap-3 mb-4">
-              <div class="w-10 h-10 rounded-lg bg-indigo-500/20 flex items-center justify-center">
-                <svg class="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
+          <div class="key-points">
+            <div class="key-point">
+              <div class="key-point-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                  <path d="M2 17l10 5 10-5"/>
+                  <path d="M2 12l10 5 10-5"/>
                 </svg>
               </div>
-              <div>
-                <h3 class="font-bold text-indigo-300">INPUT</h3>
-                <p class="text-xs text-white/50">
-                  <span data-lang-ja>社内データの収集</span>
-                  <span data-lang-en>Internal Data Collection</span>
+              <div class="key-point-content">
+                <h4>
+                  <span data-lang-ja>能力ベースの委譲</span>
+                  <span data-lang-en>Capability-Based Delegation</span>
+                </h4>
+                <p>
+                  <span data-lang-ja>ツール名ではなく「能力要件」で委譲先を決定。ツール変更時の影響を最小化</span>
+                  <span data-lang-en>Delegation decisions based on capability requirements, not tool names</span>
                 </p>
               </div>
             </div>
 
-            <div class="space-y-3">
-              <!-- 会議 -->
-              <div class="bg-white/5 rounded-lg p-3">
-                <p class="text-xs text-white/40 mb-2">
-                  <span data-lang-ja>📹 会議・商談</span>
-                  <span data-lang-en>📹 Meetings</span>
-                </p>
-                <div class="flex gap-2 flex-wrap">
-                  <span class="tool-icon text-xs bg-white/10 px-2 py-1 rounded">Zoom</span>
-                  <span class="tool-icon text-xs bg-white/10 px-2 py-1 rounded">Meet</span>
-                  <span class="tool-icon text-xs bg-white/10 px-2 py-1 rounded">Teams</span>
-                </div>
-              </div>
-
-              <!-- ドキュメント -->
-              <div class="bg-white/5 rounded-lg p-3">
-                <p class="text-xs text-white/40 mb-2">
-                  <span data-lang-ja>📝 ドキュメント</span>
-                  <span data-lang-en>📝 Documents</span>
-                </p>
-                <div class="flex gap-2 flex-wrap">
-                  <span class="tool-icon text-xs bg-white/10 px-2 py-1 rounded">Notion</span>
-                  <span class="tool-icon text-xs bg-white/10 px-2 py-1 rounded">Google Docs</span>
-                  <span class="tool-icon text-xs bg-white/10 px-2 py-1 rounded">Confluence</span>
-                </div>
-              </div>
-
-              <!-- タスク -->
-              <div class="bg-white/5 rounded-lg p-3">
-                <p class="text-xs text-white/40 mb-2">
-                  <span data-lang-ja>✅ タスク管理</span>
-                  <span data-lang-en>✅ Task Management</span>
-                </p>
-                <div class="flex gap-2 flex-wrap">
-                  <span class="tool-icon text-xs bg-white/10 px-2 py-1 rounded">Asana</span>
-                  <span class="tool-icon text-xs bg-white/10 px-2 py-1 rounded">Jira</span>
-                  <span class="tool-icon text-xs bg-white/10 px-2 py-1 rounded">Linear</span>
-                </div>
-              </div>
-
-              <!-- KPI -->
-              <div class="bg-white/5 rounded-lg p-3">
-                <p class="text-xs text-white/40 mb-2">
-                  <span data-lang-ja>📊 KPI・アナリティクス</span>
-                  <span data-lang-en>📊 KPI & Analytics</span>
-                </p>
-                <div class="flex gap-2 flex-wrap">
-                  <span class="tool-icon text-xs bg-white/10 px-2 py-1 rounded">GA4</span>
-                  <span class="tool-icon text-xs bg-white/10 px-2 py-1 rounded">Mixpanel</span>
-                  <span class="tool-icon text-xs bg-white/10 px-2 py-1 rounded">Amplitude</span>
-                </div>
-              </div>
-
-              <!-- CRM -->
-              <div class="bg-white/5 rounded-lg p-3">
-                <p class="text-xs text-white/40 mb-2">
-                  <span data-lang-ja>💼 CRM・営業</span>
-                  <span data-lang-en>💼 CRM & Sales</span>
-                </p>
-                <div class="flex gap-2 flex-wrap">
-                  <span class="tool-icon text-xs bg-white/10 px-2 py-1 rounded">Salesforce</span>
-                  <span class="tool-icon text-xs bg-white/10 px-2 py-1 rounded">HubSpot</span>
-                </div>
-              </div>
-
-              <!-- ATS -->
-              <div class="bg-white/5 rounded-lg p-3">
-                <p class="text-xs text-white/40 mb-2">
-                  <span data-lang-ja>👥 ATS・採用</span>
-                  <span data-lang-en>👥 ATS & Recruiting</span>
-                </p>
-                <div class="flex gap-2 flex-wrap">
-                  <span class="tool-icon text-xs bg-white/10 px-2 py-1 rounded">HRMOS</span>
-                  <span class="tool-icon text-xs bg-white/10 px-2 py-1 rounded">Greenhouse</span>
-                </div>
-              </div>
-
-              <!-- コミュニケーション -->
-              <div class="bg-white/5 rounded-lg p-3">
-                <p class="text-xs text-white/40 mb-2">
-                  <span data-lang-ja>💬 コミュニケーション</span>
-                  <span data-lang-en>💬 Communication</span>
-                </p>
-                <div class="flex gap-2 flex-wrap">
-                  <span class="tool-icon text-xs bg-white/10 px-2 py-1 rounded">Slack</span>
-                  <span class="tool-icon text-xs bg-white/10 px-2 py-1 rounded">Teams</span>
-                </div>
-              </div>
-
-              <!-- 財務 -->
-              <div class="bg-white/5 rounded-lg p-3">
-                <p class="text-xs text-white/40 mb-2">
-                  <span data-lang-ja>💰 財務・経理</span>
-                  <span data-lang-en>💰 Finance</span>
-                </p>
-                <div class="flex gap-2 flex-wrap">
-                  <span class="tool-icon text-xs bg-white/10 px-2 py-1 rounded">freee</span>
-                  <span class="tool-icon text-xs bg-white/10 px-2 py-1 rounded">MoneyForward</span>
-                </div>
-              </div>
-
-              <!-- コード -->
-              <div class="bg-white/5 rounded-lg p-3">
-                <p class="text-xs text-white/40 mb-2">
-                  <span data-lang-ja>💻 コード・開発</span>
-                  <span data-lang-en>💻 Code & Development</span>
-                </p>
-                <div class="flex gap-2 flex-wrap">
-                  <span class="tool-icon text-xs bg-white/10 px-2 py-1 rounded">GitHub</span>
-                  <span class="tool-icon text-xs bg-white/10 px-2 py-1 rounded">GitLab</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Arrow -->
-          <div class="flex items-center">
-            <svg class="w-8 h-8 text-white/30 flow-arrow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
-            </svg>
-          </div>
-
-          <!-- MEMORY LAYER -->
-          <div class="layer-card glass-card rounded-2xl p-6 w-72 border-t-4 border-violet-500">
-            <div class="flex items-center gap-3 mb-4">
-              <div class="w-10 h-10 rounded-lg bg-violet-500/20 flex items-center justify-center">
-                <svg class="w-5 h-5 text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"/>
+            <div class="key-point">
+              <div class="key-point-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"/>
+                  <path d="M12 6v6l4 2"/>
                 </svg>
               </div>
-              <div>
-                <h3 class="font-bold text-violet-300">MEMORY</h3>
-                <p class="text-xs text-white/50">
-                  <span data-lang-ja>組織の記憶</span>
-                  <span data-lang-en>Organizational Memory</span>
+              <div class="key-point-content">
+                <h4>
+                  <span data-lang-ja>コンテキスト保護</span>
+                  <span data-lang-en>Context Protection</span>
+                </h4>
+                <p>
+                  <span data-lang-ja>サブエージェントパターンで重い処理を分離し、オーケストレーターのコンテキストを保護</span>
+                  <span data-lang-en">Sub-agent pattern isolates heavy processing, protecting orchestrator context</span>
                 </p>
               </div>
             </div>
 
-            <div class="space-y-3">
-              <div class="bg-violet-500/10 rounded-lg p-4 border border-violet-500/20">
-                <p class="font-medium text-violet-300 text-sm mb-1">Vector Database</p>
-                <p class="text-xs text-white/50">
-                  <span data-lang-ja>長期記憶・ナレッジ蓄積</span>
-                  <span data-lang-en>Long-term memory & knowledge</span>
-                </p>
-              </div>
-              <div class="bg-violet-500/10 rounded-lg p-4 border border-violet-500/20">
-                <p class="font-medium text-violet-300 text-sm mb-1">Context Store</p>
-                <p class="text-xs text-white/50">
-                  <span data-lang-ja>短期記憶・進行中の文脈</span>
-                  <span data-lang-en>Short-term memory & context</span>
-                </p>
-              </div>
-              <div class="bg-violet-500/10 rounded-lg p-4 border border-violet-500/20">
-                <p class="font-medium text-violet-300 text-sm mb-1">KPI Store</p>
-                <p class="text-xs text-white/50">
-                  <span data-lang-ja>目標と現状のギャップ</span>
-                  <span data-lang-en>Goals vs. current state</span>
-                </p>
-              </div>
-            </div>
-
-            <div class="mt-4 p-3 bg-violet-500/5 rounded-lg border border-violet-500/10">
-              <p class="text-xs text-violet-300/70 text-center">
-                <span data-lang-ja>↑ 全レイヤーがアクセス</span>
-                <span data-lang-en>↑ All layers access this</span>
-              </p>
-            </div>
-          </div>
-
-          <!-- Arrow -->
-          <div class="flex items-center">
-            <svg class="w-8 h-8 text-white/30 flow-arrow" style="animation-delay: 0.3s" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
-            </svg>
-          </div>
-
-          <!-- PROCESSING LAYER -->
-          <div class="layer-card glass-card rounded-2xl p-6 w-72 border-t-4 border-pink-500">
-            <div class="flex items-center gap-3 mb-4">
-              <div class="w-10 h-10 rounded-lg bg-pink-500/20 flex items-center justify-center">
-                <svg class="w-5 h-5 text-pink-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+            <div class="key-point">
+              <div class="key-point-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                  <path d="M9 12l2 2 4-4"/>
                 </svg>
               </div>
-              <div>
-                <h3 class="font-bold text-pink-300">PROCESSING</h3>
-                <p class="text-xs text-white/50">
-                  <span data-lang-ja>戦略 & 実行</span>
-                  <span data-lang-en>Strategy & Execution</span>
-                </p>
-              </div>
-            </div>
-
-            <div class="space-y-3">
-              <div class="bg-pink-500/10 rounded-lg p-4 border border-pink-500/20">
-                <div class="flex items-center gap-2 mb-2">
-                  <span class="text-xs bg-pink-500/30 text-pink-300 px-2 py-0.5 rounded-full">WHAT</span>
-                </div>
-                <p class="font-medium text-pink-300 text-sm mb-1">Strategy Agent</p>
-                <p class="text-xs text-white/50">
-                  <span data-lang-ja>KPIと記憶を参照し<br>「何をするか」を決定</span>
-                  <span data-lang-en">References KPIs & memory<br>Decides "what to do"</span>
-                </p>
-              </div>
-
-              <div class="flex justify-center">
-                <svg class="w-4 h-4 text-white/20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
-                </svg>
-              </div>
-
-              <div class="bg-orange-500/10 rounded-lg p-4 border border-orange-500/20">
-                <div class="flex items-center gap-2 mb-2">
-                  <span class="text-xs bg-orange-500/30 text-orange-300 px-2 py-0.5 rounded-full">HOW</span>
-                </div>
-                <p class="font-medium text-orange-300 text-sm mb-1">Execution Agent</p>
-                <p class="text-xs text-white/50">
-                  <span data-lang-ja>指示に基づいて<br>成果物を生成</span>
-                  <span data-lang-en>Generates deliverables<br>based on instructions</span>
+              <div class="key-point-content">
+                <h4>
+                  <span data-lang-ja>自己進化</span>
+                  <span data-lang-en">Self-Evolution</span>
+                </h4>
+                <p>
+                  <span data-lang-ja>実行トレースを分析し、コンフィグを自動的に最適化するメタレイヤー</span>
+                  <span data-lang-en">Meta-layer analyzes execution traces and automatically optimizes config</span>
                 </p>
               </div>
             </div>
           </div>
+        </div>
 
-          <!-- Arrow -->
-          <div class="flex items-center">
-            <svg class="w-8 h-8 text-white/30 flow-arrow" style="animation-delay: 0.6s" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
-            </svg>
-          </div>
+        <div class="overview-visual">
+          <div class="component-diagram">
+            <p class="diagram-title">
+              <span data-lang-ja>コンポーネント構成</span>
+              <span data-lang-en">Component Structure</span>
+            </p>
 
-          <!-- EVALUATION LAYER -->
-          <div class="layer-card glass-card rounded-2xl p-6 w-72 border-t-4 border-emerald-500">
-            <div class="flex items-center gap-3 mb-4">
-              <div class="w-10 h-10 rounded-lg bg-emerald-500/20 flex items-center justify-center">
-                <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                </svg>
+            <div class="flow-diagram">
+              <div class="flow-row">
+                <span class="flow-box">User</span>
+                <span class="flow-arrow">→</span>
+                <span class="flow-box orchestrator">Claude Code (Orchestrator)</span>
+                <span class="flow-label">Single interface</span>
               </div>
-              <div>
-                <h3 class="font-bold text-emerald-300">EVALUATION</h3>
-                <p class="text-xs text-white/50">
-                  <span data-lang-ja>品質評価</span>
-                  <span data-lang-en>Quality Assurance</span>
-                </p>
+              <div class="flow-row" style="padding-left: 3rem;">
+                <span class="flow-arrow">↓</span>
+                <span class="flow-label">Classify → Resolve → Execute</span>
               </div>
-            </div>
-
-            <div class="space-y-3">
-              <div class="bg-emerald-500/10 rounded-lg p-4 border border-emerald-500/20">
-                <div class="flex items-center gap-2 mb-2">
-                  <span class="text-xs bg-emerald-500/30 text-emerald-300 px-2 py-0.5 rounded-full">Step 1</span>
-                </div>
-                <p class="font-medium text-emerald-300 text-sm mb-1">AI Critic</p>
-                <p class="text-xs text-white/50">
-                  <span data-lang-ja>自動品質チェック<br>NGなら差し戻し</span>
-                  <span data-lang-en">Auto quality check<br>Auto-reject if failed</span>
-                </p>
-              </div>
-
-              <div class="flex justify-center">
-                <svg class="w-4 h-4 text-white/20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
-                </svg>
-              </div>
-
-              <div class="bg-emerald-500/10 rounded-lg p-4 border border-emerald-500/20">
-                <div class="flex items-center gap-2 mb-2">
-                  <span class="text-xs bg-emerald-500/30 text-emerald-300 px-2 py-0.5 rounded-full">Step 2</span>
-                </div>
-                <p class="font-medium text-emerald-300 text-sm mb-1">Human-in-the-Loop</p>
-                <p class="text-xs text-white/50">
-                  <span data-lang-ja>人間が最終確認<br>FBは記憶に蓄積</span>
-                  <span data-lang-en">Human final review<br>Feedback to memory</span>
-                </p>
+              <div class="flow-row" style="padding-left: 3rem;">
+                <span class="flow-box agent">Codex CLI</span>
+                <span class="flow-box agent">Gemini CLI</span>
+                <span class="flow-box agent">Sub-agent</span>
               </div>
             </div>
 
-            <div class="mt-4 p-3 bg-emerald-500/5 rounded-lg border border-emerald-500/10">
-              <p class="text-xs text-emerald-300/70 text-center">
-                <span data-lang-ja>→ Memory へ学習データ保存</span>
-                <span data-lang-en">→ Save to Memory as training data</span>
-              </p>
-            </div>
-          </div>
-
-          <!-- Arrow -->
-          <div class="flex items-center">
-            <svg class="w-8 h-8 text-white/30 flow-arrow" style="animation-delay: 0.9s" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
-            </svg>
-          </div>
-
-          <!-- OUTPUT LAYER -->
-          <div class="layer-card glass-card rounded-2xl p-6 w-72 border-t-4 border-cyan-500">
-            <div class="flex items-center gap-3 mb-4">
-              <div class="w-10 h-10 rounded-lg bg-cyan-500/20 flex items-center justify-center">
-                <svg class="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
-                </svg>
-              </div>
-              <div>
-                <h3 class="font-bold text-cyan-300">OUTPUT</h3>
-                <p class="text-xs text-white/50">
-                  <span data-lang-ja>外部へデプロイ</span>
-                  <span data-lang-en">Deploy to External</span>
+            <div class="premise-grid" style="margin-top: 1.5rem;">
+              <div class="premise-card">
+                <p class="premise-id">P1</p>
+                <p class="premise-title">
+                  <span data-lang-ja>能力非対称</span>
+                  <span data-lang-en">Capability Asymmetry</span>
+                </p>
+                <p class="premise-desc">
+                  <span data-lang-ja">各CLIは補完的な強みを持つ</span>
+                  <span data-lang-en">Each CLI has complementary strengths</span>
                 </p>
               </div>
-            </div>
-
-            <div class="space-y-3">
-              <!-- 通知 -->
-              <div class="bg-white/5 rounded-lg p-3">
-                <p class="text-xs text-white/40 mb-2">
-                  <span data-lang-ja>🔔 通知・報告</span>
-                  <span data-lang-en">🔔 Notifications</span>
+              <div class="premise-card">
+                <p class="premise-id">P2</p>
+                <p class="premise-title">
+                  <span data-lang-ja">単一IF</span>
+                  <span data-lang-en">Single IF</span>
                 </p>
-                <div class="flex gap-2 flex-wrap">
-                  <span class="tool-icon text-xs bg-white/10 px-2 py-1 rounded">Slack</span>
-                  <span class="tool-icon text-xs bg-white/10 px-2 py-1 rounded">Teams</span>
-                  <span class="tool-icon text-xs bg-white/10 px-2 py-1 rounded">Email</span>
-                </div>
+                <p class="premise-desc">
+                  <span data-lang-ja">ユーザーは1エージェントと対話</span>
+                  <span data-lang-en">Users interact with one agent</span>
+                </p>
               </div>
-
-              <!-- コンテンツ -->
-              <div class="bg-white/5 rounded-lg p-3">
-                <p class="text-xs text-white/40 mb-2">
-                  <span data-lang-ja>📄 コンテンツ公開</span>
-                  <span data-lang-en">📄 Content Publishing</span>
+              <div class="premise-card">
+                <p class="premise-id">P3</p>
+                <p class="premise-title">
+                  <span data-lang-ja">Context律速</span>
+                  <span data-lang-en">Context Bottleneck</span>
                 </p>
-                <div class="flex gap-2 flex-wrap">
-                  <span class="tool-icon text-xs bg-white/10 px-2 py-1 rounded">CMS</span>
-                  <span class="tool-icon text-xs bg-white/10 px-2 py-1 rounded">Notion</span>
-                  <span class="tool-icon text-xs bg-white/10 px-2 py-1 rounded">WordPress</span>
-                </div>
+                <p class="premise-desc">
+                  <span data-lang-ja">コンテキストは希少資源</span>
+                  <span data-lang-en">Context window is scarce</span>
+                </p>
               </div>
-
-              <!-- SNS -->
-              <div class="bg-white/5 rounded-lg p-3">
-                <p class="text-xs text-white/40 mb-2">
-                  <span data-lang-ja>📱 SNS投稿</span>
-                  <span data-lang-en">📱 Social Media</span>
+              <div class="premise-card">
+                <p class="premise-id">P4</p>
+                <p class="premise-title">
+                  <span data-lang-ja">プロアクティブ</span>
+                  <span data-lang-en">Proactive</span>
                 </p>
-                <div class="flex gap-2 flex-wrap">
-                  <span class="tool-icon text-xs bg-white/10 px-2 py-1 rounded">X</span>
-                  <span class="tool-icon text-xs bg-white/10 px-2 py-1 rounded">LinkedIn</span>
-                </div>
+                <p class="premise-desc">
+                  <span data-lang-ja">自動提案 > 手動呼び出し</span>
+                  <span data-lang-en">Auto-suggest > manual invoke</span>
+                </p>
               </div>
-
-              <!-- 開発 -->
-              <div class="bg-white/5 rounded-lg p-3">
-                <p class="text-xs text-white/40 mb-2">
-                  <span data-lang-ja>🚀 開発・デプロイ</span>
-                  <span data-lang-en">🚀 Dev & Deploy</span>
+              <div class="premise-card">
+                <p class="premise-id">P5</p>
+                <p class="premise-title">
+                  <span data-lang-ja">知識共有</span>
+                  <span data-lang-en">Knowledge Shared</span>
                 </p>
-                <div class="flex gap-2 flex-wrap">
-                  <span class="tool-icon text-xs bg-white/10 px-2 py-1 rounded">GitHub</span>
-                  <span class="tool-icon text-xs bg-white/10 px-2 py-1 rounded">Vercel</span>
-                </div>
-              </div>
-
-              <!-- データ更新 -->
-              <div class="bg-white/5 rounded-lg p-3">
-                <p class="text-xs text-white/40 mb-2">
-                  <span data-lang-ja>🔄 データ更新</span>
-                  <span data-lang-en">🔄 Data Update</span>
+                <p class="premise-desc">
+                  <span data-lang-ja">全エージェントが同一知識にアクセス</span>
+                  <span data-lang-en">All agents access same knowledge</span>
                 </p>
-                <div class="flex gap-2 flex-wrap">
-                  <span class="tool-icon text-xs bg-white/10 px-2 py-1 rounded">Salesforce</span>
-                  <span class="tool-icon text-xs bg-white/10 px-2 py-1 rounded">HubSpot</span>
-                </div>
               </div>
             </div>
           </div>
-
         </div>
       </div>
+    </div>
+  </section>
 
-      <!-- Flow description -->
-      <div class="mt-12 text-center reveal">
-        <p class="text-white/40 text-sm">
-          <span data-lang-ja>← 横スクロールで全体を確認できます →</span>
-          <span data-lang-en">← Scroll horizontally to see the full flow →</span>
+  <!-- ARCHITECTURE -->
+  <section class="architecture" id="architecture">
+    <div class="section-container">
+      <div class="section-header">
+        <p class="section-number">02</p>
+        <h2 class="section-title">
+          <span data-lang-ja">Orchestration Architecture</span>
+          <span data-lang-en">Orchestration Architecture</span>
+        </h2>
+        <p class="section-lead">
+          <span data-lang-ja">3層レイヤーモデル — 理論・実践・進化</span>
+          <span data-lang-en">3-Layer Model — Theory, Practice, Evolution</span>
         </p>
       </div>
+
+      <div class="arch-content">
+        <!-- Three Layer Stack -->
+        <div class="layer-stack-container">
+          <div class="stack-header">
+            <h3 class="stack-title">
+              <span data-lang-ja">Evolutionary Layered Architecture</span>
+              <span data-lang-en">Evolutionary Layered Architecture</span>
+            </h3>
+            <span class="stack-badge">v2</span>
+          </div>
+
+          <div class="three-layers">
+            <div class="layer-card" data-layer="1">
+              <div class="layer-badge">
+                <span class="layer-num">Layer 1</span>
+                <span class="layer-name">Invariant Theory</span>
+              </div>
+              <div class="layer-body">
+                <p class="layer-desc">
+                  <span data-lang-ja">どのツールが存在するかに依らない、オーケストレーションの不変理論。憲法のように決して変わらない原則。</span>
+                  <span data-lang-en">The logic of orchestration that holds regardless of which tools exist. Like a constitution, these never change.</span>
+                </p>
+                <div class="layer-items">
+                  <span class="layer-item">5 Axioms</span>
+                  <span class="layer-item">7 Invariants</span>
+                  <span class="layer-item">Tool-agnostic</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="layer-card" data-layer="2">
+              <div class="layer-badge">
+                <span class="layer-num">Layer 2</span>
+                <span class="layer-name">Practical Realization</span>
+              </div>
+              <div class="layer-body">
+                <p class="layer-desc">
+                  <span data-lang-ja">現在のSOTAツールへの具体的なバインディング。ツールが変われば変更される、法律のような存在。</span>
+                  <span data-lang-en">Concrete binding to current SOTA tools that validates the theory. Changes when tools change, like legislation.</span>
+                </p>
+                <div class="layer-items">
+                  <span class="layer-item">Capability Registry</span>
+                  <span class="layer-item">Intent Classifier</span>
+                  <span class="layer-item">Trace Schema</span>
+                  <span class="layer-item">Context Budget</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="layer-card" data-layer="3">
+              <div class="layer-badge">
+                <span class="layer-num">Layer 3</span>
+                <span class="layer-name">Self-Evolutionary Engine</span>
+              </div>
+              <div class="layer-body">
+                <p class="layer-desc">
+                  <span data-lang-ja">実行トレースを分析し、Layer 2のコンフィグを自動的に改善するメタレイヤー。司法のように現実に基づいて法律を修正。</span>
+                  <span data-lang-en">Meta-layer that observes execution and automatically refines Layer 2 config. Like judiciary, amending legislation based on reality.</span>
+                </p>
+                <div class="layer-items">
+                  <span class="layer-item">Trace Analysis</span>
+                  <span class="layer-item">Proposal Generation</span>
+                  <span class="layer-item">Auto-Rollback</span>
+                  <span class="layer-item">Trust Gradient</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pipeline Visualization -->
+        <div class="pipeline-container">
+          <p class="pipeline-title">
+            <span data-lang-ja">オーケストレーションパイプライン</span>
+            <span data-lang-en">Orchestration Pipeline</span>
+          </p>
+
+          <div class="pipeline-flow">
+            <div class="pipeline-stage">
+              <span class="stage-name">Classify</span>
+              <span class="stage-desc">
+                <span data-lang-ja">Intent → Capability</span>
+                <span data-lang-en">Intent → Capability</span>
+              </span>
+            </div>
+            <span class="pipeline-arrow">→</span>
+            <div class="pipeline-stage">
+              <span class="stage-name">Resolve</span>
+              <span class="stage-desc">
+                <span data-lang-ja">Capability → Tool</span>
+                <span data-lang-en">Capability → Tool</span>
+              </span>
+            </div>
+            <span class="pipeline-arrow">→</span>
+            <div class="pipeline-stage">
+              <span class="stage-name">Execute</span>
+              <span class="stage-desc">
+                <span data-lang-ja">Sub-agent実行</span>
+                <span data-lang-en">Sub-agent exec</span>
+              </span>
+            </div>
+            <span class="pipeline-arrow">→</span>
+            <div class="pipeline-stage">
+              <span class="stage-name">Synthesize</span>
+              <span class="stage-desc">
+                <span data-lang-ja">結果要約</span>
+                <span data-lang-en">Summarize result</span>
+              </span>
+            </div>
+            <span class="pipeline-arrow">→</span>
+            <div class="pipeline-stage">
+              <span class="stage-name">Persist</span>
+              <span class="stage-desc">
+                <span data-lang-ja">Trace保存</span>
+                <span data-lang-en">Save trace</span>
+              </span>
+            </div>
+            <span class="pipeline-arrow">→</span>
+            <div class="pipeline-stage">
+              <span class="stage-name">Evolve</span>
+              <span class="stage-desc">
+                <span data-lang-ja">Config改善</span>
+                <span data-lang-en">Improve config</span>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
-  <!-- Principles Section -->
-  <section id="principles" class="py-24 px-6">
-    <div class="max-w-6xl mx-auto">
-      <div class="text-center mb-16 reveal">
-        <h2 class="text-3xl md:text-5xl font-bold mb-4">
-          <span class="text-gradient-warm">
-            <span data-lang-ja>3つの原則</span>
-            <span data-lang-en">3 Principles</span>
-          </span>
+  <!-- DEEP DIVE -->
+  <section class="deep-dive" id="deep-dive">
+    <div class="section-container">
+      <div class="section-header">
+        <p class="section-number">03</p>
+        <h2 class="section-title">
+          <span data-lang-ja">各論</span>
+          <span data-lang-en">Deep Dive</span>
         </h2>
+        <p class="section-lead">
+          <span data-lang-ja">構成要素の詳細解説</span>
+          <span data-lang-en">Detailed breakdown of key components</span>
+        </p>
       </div>
 
-      <div class="grid md:grid-cols-3 gap-8">
-        <div class="glass-card rounded-2xl p-8 reveal">
-          <div class="w-14 h-14 rounded-xl bg-violet-500/20 flex items-center justify-center mb-6">
-            <svg class="w-7 h-7 text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
-            </svg>
+      <div class="deep-dive-content">
+        <!-- Five Axioms -->
+        <div class="topic-block">
+          <div class="topic-text">
+            <div class="topic-header">
+              <p class="topic-label" data-color="axiom">
+                <span data-lang-ja">Layer 1: 不変理論</span>
+                <span data-lang-en">Layer 1: Invariant Theory</span>
+              </p>
+              <h3 class="topic-title">
+                <span data-lang-ja">5つの公理</span>
+                <span data-lang-en">Five Axioms</span>
+              </h3>
+            </div>
+            <p class="topic-desc">
+              <span data-lang-ja">
+                これらの公理は、どのツールが存在するかに関わらず、あらゆるマルチエージェントシステムで成り立ちます。
+                システムの「憲法」として、決して変更されることはありません。
+              </span>
+              <span data-lang-en">
+                These axioms hold for any multi-agent system, regardless of the tool landscape.
+                As the system's "constitution," they are never changed.
+              </span>
+            </p>
           </div>
-          <h3 class="text-2xl font-bold mb-4">
-            <span data-lang-ja>記憶は財産</span>
-            <span data-lang-en">Memory is Asset</span>
-          </h3>
-          <p class="text-white/60">
-            <span data-lang-ja>退職しても、組織改編があっても、知見は失われない。組織の記憶が資産として蓄積される。</span>
-            <span data-lang-en">Knowledge persists through departures and reorganizations. Organizational memory accumulates as an asset.</span>
-          </p>
+
+          <div class="axiom-list">
+            <div class="axiom-card">
+              <div class="axiom-header">
+                <span class="axiom-num">A1</span>
+                <span class="axiom-name">Capability Primacy</span>
+              </div>
+              <p class="axiom-desc">
+                <span data-lang-ja">委譲決定はツール名ではなく「能力要件」で表現されなければならない</span>
+                <span data-lang-en">Delegation decisions must be expressed in terms of capability requirements, never tool names</span>
+              </p>
+            </div>
+            <div class="axiom-card">
+              <div class="axiom-header">
+                <span class="axiom-num">A2</span>
+                <span class="axiom-name">Observability Before Optimization</span>
+              </div>
+              <p class="axiom-desc">
+                <span data-lang-ja">委譲結果を測定できないシステムは、それを改善することもできない</span>
+                <span data-lang-en">A system that cannot measure its delegation outcomes cannot improve them</span>
+              </p>
+            </div>
+            <div class="axiom-card">
+              <div class="axiom-header">
+                <span class="axiom-num">A3</span>
+                <span class="axiom-name">Graceful Degradation</span>
+              </div>
+              <p class="axiom-desc">
+                <span data-lang-ja">単一エージェントの削除でシステムは壊れてはならない。品質低下のみ許容</span>
+                <span data-lang-en">Removal of any single agent must not break the system, only reduce quality</span>
+              </p>
+            </div>
+            <div class="axiom-card">
+              <div class="axiom-header">
+                <span class="axiom-num">A4</span>
+                <span class="axiom-name">Context as Currency</span>
+              </div>
+              <p class="axiom-desc">
+                <span data-lang-ja">オーケストレーターに読み込まれるすべてのトークンは、その存在を正当化しなければならない</span>
+                <span data-lang-en">Every token loaded into the orchestrator must justify its presence</span>
+              </p>
+            </div>
+            <div class="axiom-card">
+              <div class="axiom-header">
+                <span class="axiom-num">A5</span>
+                <span class="axiom-name">Architecture as Data</span>
+              </div>
+              <p class="axiom-desc">
+                <span data-lang-ja">システムのコンフィグはシステム自身が読み書き・修正可能でなければならない</span>
+                <span data-lang-en">The system's configuration must be readable, writable, and revisable by the system itself</span>
+              </p>
+            </div>
+          </div>
         </div>
 
-        <div class="glass-card rounded-2xl p-8 reveal">
-          <div class="w-14 h-14 rounded-xl bg-pink-500/20 flex items-center justify-center mb-6">
-            <svg class="w-7 h-7 text-pink-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
-            </svg>
+        <!-- Capability Requirements -->
+        <div class="topic-block reverse">
+          <div class="topic-text">
+            <div class="topic-header">
+              <p class="topic-label" data-color="capability">
+                <span data-lang-ja">能力要件分類</span>
+                <span data-lang-en">Capability Taxonomy</span>
+              </p>
+              <h3 class="topic-title">
+                <span data-lang-ja">7つの能力</span>
+                <span data-lang-en">Seven Capabilities</span>
+              </h3>
+            </div>
+            <p class="topic-desc">
+              <span data-lang-ja">
+                オーケストラが対処する根本的な能力ニーズです。
+                各能力には現在のツール割り当てがありますが、Capability Registryにより
+                ツール変更時は1箇所の変更で済みます。
+              </span>
+              <span data-lang-en">
+                The underlying capability needs that the orchestra addresses.
+                Each capability has a current tool assignment, but through the Capability Registry,
+                tool changes require updating only one place.
+              </span>
+            </p>
           </div>
-          <h3 class="text-2xl font-bold mb-4">
-            <span data-lang-ja>AIは手足</span>
-            <span data-lang-en">AI as Extension</span>
-          </h3>
-          <p class="text-white/60">
-            <span data-lang-ja>AIが戦略を決め、人間が実行するのではない。人間が方向性を決め、AIが実行する。判断は常に人間。</span>
-            <span data-lang-en">AI doesn't decide strategy while humans execute. Humans set direction, AI executes. Judgment is always human.</span>
-          </p>
+
+          <div class="capability-grid">
+            <div class="capability-card">
+              <div class="cap-header">
+                <span class="cap-icon" data-cap="C1">C1</span>
+                <span class="cap-name">Orchestration</span>
+              </div>
+              <p class="cap-desc">
+                <span data-lang-ja">タスク分解、委譲決定、結果の統合</span>
+                <span data-lang-en">Task decomposition, delegation decisions, result synthesis</span>
+              </p>
+              <p class="cap-tool">→ Claude Code</p>
+            </div>
+            <div class="capability-card">
+              <div class="cap-header">
+                <span class="cap-icon" data-cap="C2">C2</span>
+                <span class="cap-name">Fast Implementation</span>
+              </div>
+              <p class="cap-desc">
+                <span data-lang-ja">コード記述、編集、ファイル操作</span>
+                <span data-lang-en">Code writing, editing, file manipulation</span>
+              </p>
+              <p class="cap-tool">→ Claude Code</p>
+            </div>
+            <div class="capability-card">
+              <div class="cap-header">
+                <span class="cap-icon" data-cap="C3">C3</span>
+                <span class="cap-name">Deep Reasoning</span>
+              </div>
+              <p class="cap-desc">
+                <span data-lang-ja">アーキテクチャ決定、トレードオフ分析、根本原因分析</span>
+                <span data-lang-en">Architecture decisions, tradeoff analysis, root cause analysis</span>
+              </p>
+              <p class="cap-tool">→ Codex CLI (gpt-5.2-codex)</p>
+            </div>
+            <div class="capability-card">
+              <div class="cap-header">
+                <span class="cap-icon" data-cap="C4">C4</span>
+                <span class="cap-name">Large-Context Processing</span>
+              </div>
+              <p class="cap-desc">
+                <span data-lang-ja">リポジトリ全体分析、マルチドキュメントリサーチ</span>
+                <span data-lang-en">Repository-wide analysis, multi-document research</span>
+              </p>
+              <p class="cap-tool">→ Gemini CLI (1M context)</p>
+            </div>
+            <div class="capability-card">
+              <div class="cap-header">
+                <span class="cap-icon" data-cap="C6">C6</span>
+                <span class="cap-name">Multimodal Processing</span>
+              </div>
+              <p class="cap-desc">
+                <span data-lang-ja">PDF、ビデオ、オーディオ、画像分析</span>
+                <span data-lang-en">PDF, video, audio, image analysis</span>
+              </p>
+              <p class="cap-tool">→ Gemini CLI</p>
+            </div>
+            <div class="capability-card">
+              <div class="cap-header">
+                <span class="cap-icon" data-cap="C7">C7</span>
+                <span class="cap-name">Quality Assurance</span>
+              </div>
+              <p class="cap-desc">
+                <span data-lang-ja">コードレビュー、実装検証</span>
+                <span data-lang-en">Code review, implementation verification</span>
+              </p>
+              <p class="cap-tool">→ Codex CLI / Claude session</p>
+            </div>
+          </div>
         </div>
 
-        <div class="glass-card rounded-2xl p-8 reveal">
-          <div class="w-14 h-14 rounded-xl bg-emerald-500/20 flex items-center justify-center mb-6">
-            <svg class="w-7 h-7 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
-            </svg>
+        <!-- Evolution Engine -->
+        <div class="topic-block">
+          <div class="topic-text">
+            <div class="topic-header">
+              <p class="topic-label" data-color="evolution">
+                <span data-lang-ja">Layer 3: 自己進化エンジン</span>
+                <span data-lang-en">Layer 3: Self-Evolutionary Engine</span>
+              </p>
+              <h3 class="topic-title">
+                <span data-lang-ja">進化サイクル</span>
+                <span data-lang-en">Evolution Cycle</span>
+              </h3>
+            </div>
+            <p class="topic-desc">
+              <span data-lang-ja">
+                進化エンジンは実行トレースを分析し、Capability Registryの変更を提案します。
+                信頼レベルに応じて、人間の承認が必要な段階から完全自律まで段階的に移行します。
+                パフォーマンス劣化時は自動ロールバックが発動します。
+              </span>
+              <span data-lang-en">
+                The evolution engine analyzes execution traces and proposes changes to the Capability Registry.
+                Based on trust level, it transitions from requiring human approval to full autonomy.
+                Auto-rollback activates on performance degradation.
+              </span>
+            </p>
           </div>
-          <h3 class="text-2xl font-bold mb-4">
-            <span data-lang-ja>共に育つ</span>
-            <span data-lang-en">Grow Together</span>
-          </h3>
-          <p class="text-white/60">
-            <span data-lang-ja>人間のフィードバックがAIを育て、育ったAIが組織を強くする。教育と成長の循環。</span>
-            <span data-lang-en">Human feedback trains AI, trained AI strengthens the organization. A cycle of education and growth.</span>
-          </p>
-        </div>
-      </div>
-    </div>
-  </section>
 
-  <!-- CTA Section -->
-  <section class="py-24 px-6">
-    <div class="max-w-4xl mx-auto text-center reveal">
-      <div class="glass-card rounded-3xl p-12 md:p-16 relative overflow-hidden">
-        <div class="absolute inset-0 bg-gradient-to-br from-violet-500/5 via-pink-500/5 to-orange-500/5"></div>
-        <div class="relative z-10">
-          <h2 class="text-3xl md:text-4xl font-bold mb-6">
-            <span data-lang-ja>組織を進化させる準備はできていますか？</span>
-            <span data-lang-en">Ready to evolve your organization?</span>
-          </h2>
-          <p class="text-white/60 text-lg mb-8 max-w-2xl mx-auto">
-            <span data-lang-ja>Neural Organizationは、単なるAIツールの導入ではありません。<br>組織全体が「学習する生命体」へと進化するためのフレームワークです。</span>
-            <span data-lang-en">Neural Organization is not just about adopting AI tools.<br>It's a framework for evolving your entire organization into a "learning organism".</span>
-          </p>
-          <div class="flex flex-col sm:flex-row gap-4 justify-center">
-            <a href="#" class="px-8 py-4 bg-gradient-to-r from-violet-500 to-pink-500 rounded-full font-semibold hover:opacity-90 transition-opacity">
-              <span data-lang-ja>詳細資料をダウンロード</span>
-              <span data-lang-en">Download Whitepaper</span>
-            </a>
-            <a href="#" class="px-8 py-4 bg-white/10 border border-white/20 rounded-full font-semibold hover:bg-white/15 transition-colors">
-              <span data-lang-ja>お問い合わせ</span>
-              <span data-lang-en">Contact Us</span>
-            </a>
+          <div class="evolution-grid">
+            <div class="evolution-card">
+              <p class="evo-step">Step 1</p>
+              <p class="evo-title">Collect Traces</p>
+              <p class="evo-desc">
+                <span data-lang-ja">能力ごとに最低20件の委譲イベントを蓄積</span>
+                <span data-lang-en">Accumulate 20+ delegation events per capability</span>
+              </p>
+            </div>
+            <div class="evolution-card">
+              <p class="evo-step">Step 2</p>
+              <p class="evo-title">Analyze Patterns</p>
+              <p class="evo-desc">
+                <span data-lang-ja">成功率、レイテンシ、コスト、フォールバック頻度を分析</span>
+                <span data-lang-en">Analyze success rate, latency, cost, fallback frequency</span>
+              </p>
+            </div>
+            <div class="evolution-card">
+              <p class="evo-step">Step 3</p>
+              <p class="evo-title">Generate Proposal</p>
+              <p class="evo-desc">
+                <span data-lang-ja">根拠と証拠を含むコンフィグ変更提案を生成</span>
+                <span data-lang-en">Generate config change proposal with rationale and evidence</span>
+              </p>
+            </div>
+            <div class="evolution-card">
+              <p class="evo-step">Step 4</p>
+              <p class="evo-title">Review (Human)</p>
+              <p class="evo-desc">
+                <span data-lang-ja">信頼レベルに応じて人間が承認/却下/修正</span>
+                <span data-lang-en">Human approves/rejects/modifies based on trust level</span>
+              </p>
+            </div>
+            <div class="evolution-card">
+              <p class="evo-step">Step 5</p>
+              <p class="evo-title">Apply Change</p>
+              <p class="evo-desc">
+                <span data-lang-ja">Registry更新、履歴記録、トレースカウンタリセット</span>
+                <span data-lang-en">Update registry, log history, reset trace counters</span>
+              </p>
+            </div>
+            <div class="evolution-card">
+              <p class="evo-step">Step 6</p>
+              <p class="evo-title">Observe Impact</p>
+              <p class="evo-desc">
+                <span data-lang-ja">前後比較、劣化検出時は自動ロールバック</span>
+                <span data-lang-en">Compare pre/post metrics, auto-rollback on degradation</span>
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tradeoff Axes -->
+        <div class="topic-block reverse">
+          <div class="topic-text">
+            <div class="topic-header">
+              <p class="topic-label" data-color="tradeoff">
+                <span data-lang-ja">設計トレードオフ</span>
+                <span data-lang-en">Design Tradeoffs</span>
+              </p>
+              <h3 class="topic-title">
+                <span data-lang-ja">7つの軸</span>
+                <span data-lang-en">Seven Axes</span>
+              </h3>
+            </div>
+            <p class="topic-desc">
+              <span data-lang-ja">
+                オーケストラテンプレートのすべての設計決定は、これらの軸上に位置します。
+                各軸は真の緊張関係を表しており、普遍的に正しいポジションはありません。
+              </span>
+              <span data-lang-en">
+                Every design decision in the orchestra template sits on one or more of these axes.
+                Each axis represents a genuine tension — there is no universally correct position.
+              </span>
+            </p>
+          </div>
+
+          <div class="tradeoff-list">
+            <div class="tradeoff-row">
+              <span class="tradeoff-id">T1</span>
+              <span class="tradeoff-name">
+                <span data-lang-ja">特化 vs 汎用</span>
+                <span data-lang-en">Specialization vs Generality</span>
+              </span>
+              <div class="tradeoff-poles">
+                <span class="pole-a">
+                  <span data-lang-ja">能力別専用エージェント</span>
+                  <span data-lang-en">Dedicated agent per capability</span>
+                </span>
+                <span class="pole-b">
+                  <span data-lang-ja">単一エージェントが全処理</span>
+                  <span data-lang-en">Single agent handles everything</span>
+                </span>
+              </div>
+            </div>
+            <div class="tradeoff-row">
+              <span class="tradeoff-id">T2</span>
+              <span class="tradeoff-name">
+                <span data-lang-ja">自動化 vs 制御</span>
+                <span data-lang-en">Automation vs Control</span>
+              </span>
+              <div class="tradeoff-poles">
+                <span class="pole-a">
+                  <span data-lang-ja">システムが委譲を決定</span>
+                  <span data-lang-en">System decides when to delegate</span>
+                </span>
+                <span class="pole-b">
+                  <span data-lang-ja">ユーザーが委譲を決定</span>
+                  <span data-lang-en">User decides when to delegate</span>
+                </span>
+              </div>
+            </div>
+            <div class="tradeoff-row">
+              <span class="tradeoff-id">T3</span>
+              <span class="tradeoff-name">
+                <span data-lang-ja">コンテキスト分離 vs 豊富さ</span>
+                <span data-lang-en">Context Isolation vs Richness</span>
+              </span>
+              <div class="tradeoff-poles">
+                <span class="pole-a">
+                  <span data-lang-ja">サブエージェントで保護</span>
+                  <span data-lang-en">Protect via sub-agents</span>
+                </span>
+                <span class="pole-b">
+                  <span data-lang-ja">オーケストレーターに全情報</span>
+                  <span data-lang-en">Full info to orchestrator</span>
+                </span>
+              </div>
+            </div>
+            <div class="tradeoff-row">
+              <span class="tradeoff-id">T4</span>
+              <span class="tradeoff-name">
+                <span data-lang-ja">安定性 vs 適応性</span>
+                <span data-lang-en">Stability vs Adaptability</span>
+              </span>
+              <div class="tradeoff-poles">
+                <span class="pole-a">
+                  <span data-lang-ja">ツール選択をハードコード</span>
+                  <span data-lang-en">Hardcode tool choices</span>
+                </span>
+                <span class="pole-b">
+                  <span data-lang-ja">ツール選択を抽象化</span>
+                  <span data-lang-en">Abstract tool choices</span>
+                </span>
+              </div>
+            </div>
+            <div class="tradeoff-row">
+              <span class="tradeoff-id">T5</span>
+              <span class="tradeoff-name">
+                <span data-lang-ja">シンプルさ vs 機能性</span>
+                <span data-lang-en">Simplicity vs Capability</span>
+              </span>
+              <div class="tradeoff-poles">
+                <span class="pole-a">
+                  <span data-lang-ja">シンプル、少ない障害モード</span>
+                  <span data-lang-en">Simpler, fewer failure modes</span>
+                </span>
+                <span class="pole-b">
+                  <span data-lang-ja">リッチ、強力なワークフロー</span>
+                  <span data-lang-en">Richer, more powerful workflows</span>
+                </span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -709,13 +1925,19 @@
   </section>
 
   <!-- Footer -->
-  <footer class="py-12 px-6 border-t border-white/10">
-    <div class="max-w-6xl mx-auto text-center">
-      <p class="text-white/40 text-sm">
-        Neural Organization v1.0 —
-        <span data-lang-ja>記憶を持ち、戦略に基づいて動き、人と共に学ぶ組織</span>
-        <span data-lang-en">An organization that remembers, acts on strategy, and learns with people</span>
-      </p>
+  <footer class="site-footer">
+    <div class="footer-content">
+      <div class="footer-brand">
+        <p class="footer-logo">Agent Orchestration</p>
+        <p class="footer-tagline">
+          <span data-lang-ja">能力ベースの委譲、自己進化するコンフィグ、ツール非依存の設計</span>
+          <span data-lang-en">Capability-based delegation, self-evolving config, tool-agnostic design</span>
+        </p>
+      </div>
+      <div class="footer-meta">
+        <p>Evolutionary Layered Architecture v2</p>
+        <p>Claude Code Orchestra</p>
+      </div>
     </div>
   </footer>
 
@@ -725,25 +1947,44 @@
       document.documentElement.lang = lang;
       document.getElementById('lang-ja').classList.toggle('active', lang === 'ja');
       document.getElementById('lang-en').classList.toggle('active', lang === 'en');
-      localStorage.setItem('lang', lang);
+      localStorage.setItem('agent-orch-lang', lang);
     }
 
-    // Initialize language from localStorage or browser
-    const savedLang = localStorage.getItem('lang') || (navigator.language.startsWith('ja') ? 'ja' : 'en');
+    // Initialize language
+    const savedLang = localStorage.getItem('agent-orch-lang') || (navigator.language.startsWith('ja') ? 'ja' : 'en');
     setLang(savedLang);
 
-    // Scroll reveal
-    const observer = new IntersectionObserver((entries) => {
+    // Navigation dots
+    const sections = document.querySelectorAll('section');
+    const navDots = document.querySelectorAll('.nav-dot');
+
+    const observerOptions = {
+      root: null,
+      rootMargin: '-50% 0px -50% 0px',
+      threshold: 0
+    };
+
+    const sectionObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
+          navDots.forEach(dot => dot.classList.remove('active'));
+          const activeDot = document.querySelector(`.nav-dot[data-section="${entry.target.id}"]`);
+          if (activeDot) activeDot.classList.add('active');
         }
       });
-    }, { threshold: 0.1 });
+    }, observerOptions);
 
-    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+    sections.forEach(section => sectionObserver.observe(section));
 
-    // Smooth scroll
+    // Navigation click
+    navDots.forEach(dot => {
+      dot.addEventListener('click', () => {
+        const sectionId = dot.getAttribute('data-section');
+        document.getElementById(sectionId).scrollIntoView({ behavior: 'smooth' });
+      });
+    });
+
+    // Smooth scroll for anchor links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
       anchor.addEventListener('click', function(e) {
         e.preventDefault();
