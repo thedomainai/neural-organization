@@ -1,58 +1,79 @@
-# neumann
+# Agentic AI Management
 
-AI-Driven Weekly Meeting Report Assistant - 曖昧性を排除し、経営会議の生産性を最大化する
+AI-powered management cycle optimizer that eliminates ambiguity in business reporting and drives data-driven decision-making.
 
 ## Overview
 
-neumannは、週次ミーティングレポートの曖昧性を自動検出し、マネージャーに明確化を促すことで、経営陣への報告品質を向上させるAIアシスタントです。
+Agentic AI Management (formerly "neumann") is an Agentic AI product that accompanies the entire management cycle -- plan-vs-actual tracking, variance analysis, next-action definition, and reflection. It automatically detects ambiguity in weekly reports and management documents, prompts authors with targeted questions, and generates structured action plans to close performance gaps.
 
-## Documentation
+The product is part of the [Neural Organization](../../) ecosystem.
 
-詳細なドキュメントは [docs/](./docs/) を参照してください：
+## Document Index
 
-- [Vision](./docs/00_vision/) - プロジェクトビジョン
-- [Concept](./docs/01_concept/) - コンセプト・設計思想
-- [Product](./docs/02_product/) - プロダクト仕様・アーキテクチャ
-- [Validation](./docs/03_validation/) - 仮説検証・PoC
-- [Business](./docs/04_business/) - ビジネスモデル・市場分析
-- [Decisions](./docs/05_decisions/) - 意思決定記録
+| Document | Description |
+|---|---|
+| [00_overview.md](00_overview.md) | WHY / WHO / WHAT / Project Status |
+| [01_concept.md](01_concept.md) | Problem definition, Management Cycle, solution hypothesis, value proposition |
+| [02_architecture.md](02_architecture.md) | 5-layer mapping (Neural Org), agent design, tech stack |
+| [03_implementation.md](03_implementation.md) | Project structure, setup, dev workflow, deployment |
+| [docs/](docs/) | Detailed documentation (vision, product specs, validation, business, decisions) |
 
-## Tech Stack
-
-- **Framework**: Next.js 14+ (App Router)
-- **UI**: React + Tailwind CSS
-- **State Management**: Zustand
-- **LLM**: Claude API (Anthropic)
-- **Auth**: NextAuth.js
-
-## Getting Started
+## Quick Start
 
 ```bash
 # Install dependencies
 npm install
 
-# Run development server
+# Start development server
 npm run dev
 
 # Open http://localhost:3000
 ```
 
-## Project Structure
+## Tech Stack
 
-詳細は [src/README.md](./src/README.md) を参照。
+| Category | Technology |
+|---|---|
+| Framework | Next.js 14 (App Router) |
+| UI | React 18 + Tailwind CSS |
+| State | Zustand |
+| Language | TypeScript 5.4 |
+| AI | Claude API (Anthropic) |
+
+## Project Structure
 
 ```
 src/
-├── app/          # Next.js App Router
-├── components/   # 共通UIコンポーネント
-├── features/     # 機能ドメイン
-├── domain/       # ビジネスロジック（★コア）
-├── services/     # 外部サービス統合
-├── lib/          # ユーティリティ
-├── store/        # 状態管理
-├── types/        # 型定義
-└── styles/       # スタイル
+├── app/          # Next.js App Router (pages + API routes)
+├── components/   # Shared UI components
+├── features/     # Feature modules (dashboard, editor, reports)
+├── domain/       # Business logic core (audit, intervention, KPI)
+├── services/     # External service integration (AI, Google, Notion)
+├── lib/          # Utilities (theme, formatters)
+├── store/        # State management (Zustand)
+└── types/        # Shared type definitions
 ```
+
+## Key Features
+
+- **Ambiguity Detection Engine**: 5-pattern detection (fact/interpretation mixing, lack of quantification, unclear action, shallow analysis, missing coverage)
+- **Management Cycle Support**: Plan-vs-actual tracking, variance analysis, next-action planning, reflection
+- **Autonomous Intervention**: Proactive questioning before meetings, not reactive feedback after
+- **Quality Scoring**: Quantified report quality with actionable improvement suggestions
+
+## Current Phase
+
+**Phase 1: Validation** -- Verifying problem and solution hypotheses (ambiguity detection PoC, CEO acceptance testing).
+
+## Scripts
+
+| Script | Description |
+|---|---|
+| `npm run dev` | Start development server |
+| `npm run build` | Production build |
+| `npm run start` | Start production server |
+| `npm run lint` | Run linter |
+| `npm run type-check` | TypeScript type checking |
 
 ## License
 
