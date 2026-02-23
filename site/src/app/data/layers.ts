@@ -11,17 +11,17 @@ export const layers: Layer[] = [
   {
     id: 'layer-0',
     level: 0,
-    name: 'Interface',
+    name: 'Perception',
     description:
-      '外部世界（ユーザー、API、データソース）とのやりとりを管理する',
+      '現実世界との接続を確立し、流入するデータからシグナルを検出する。能動的な接続判断とシグナルのフィルタリングを担う',
     color: 'var(--primary-400)',
   },
   {
     id: 'layer-1',
     level: 1,
-    name: 'Perception',
+    name: 'Understanding',
     description:
-      '生データをセマンティックな認識に変換し、組織状態のエンティティモデルを構築する',
+      '検出されたシグナルを統合し、現実の因果モデルを構築・維持する。データベースではなく「生きた世界モデル」',
     color: 'var(--primary-500)',
   },
   {

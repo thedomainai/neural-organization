@@ -32,7 +32,7 @@ export const glossary: Record<string, GlossaryTerm> = {
   layer: {
     term: 'Layer',
     definition:
-      '5層アーキテクチャの各階層。L0 Interface、L1 Perception、L2 Reasoning、L3 Execution、L4 Reflection で構成される。',
+      '5層アーキテクチャの各階層。L0 Perception（知覚）、L1 Understanding（理解）、L2 Reasoning（推論）、L3 Execution（実行）、L4 Reflection（内省）で構成される。',
     category: 'architecture',
   },
   crosscutting: {

@@ -36,42 +36,36 @@
     },
 
     "layer": {
-      "$description": "5-layer architecture - derived from primary/secondary scales",
-      "input": {
+      "$description": "5-layer architecture (L0-L4) - derived from primary/secondary scales",
+      "perception": {
         "value": "{colors.primary.600}",
         "resolved": "#4f46e5",
-        "name": "Input Layer",
-        "description": "社内データの収集"
+        "name": "L0 Perception",
+        "description": "現実世界 → シグナル"
       },
-      "memory": {
+      "understanding": {
         "value": "{colors.primary.500}",
         "resolved": "#6366f1",
-        "name": "Memory Layer",
-        "description": "組織の記憶 & ナレッジ"
+        "name": "L1 Understanding",
+        "description": "シグナル → 世界モデル"
       },
-      "strategy": {
+      "reasoning": {
         "value": "{colors.secondary.500}",
         "resolved": "#8b5cf6",
-        "name": "Strategy Layer",
-        "description": "戦略立案（WHAT）"
+        "name": "L2 Reasoning",
+        "description": "世界モデル × 目的 → 行動計画"
       },
       "execution": {
         "value": "{colors.secondary.400}",
         "resolved": "#a78bfa",
-        "name": "Execution Layer",
-        "description": "タスク実行（HOW）"
+        "name": "L3 Execution",
+        "description": "行動計画 → アウトプット"
       },
-      "evaluation": {
+      "reflection": {
         "value": "{colors.secondary.300}",
         "resolved": "#c4b5fd",
-        "name": "Evaluation Layer",
-        "description": "品質評価 & フィードバック"
-      },
-      "output": {
-        "value": "{colors.primary.300}",
-        "resolved": "#a5b4fc",
-        "name": "Output Layer",
-        "description": "外部システムへのデプロイ"
+        "name": "L4 Reflection",
+        "description": "アウトプット → 学習 → 全層更新"
       }
     },
 
