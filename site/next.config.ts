@@ -6,6 +6,11 @@ const withBundleAnalyzer = bundleAnalyzer({
 });
 
 const nextConfig: NextConfig = {
+  output: "export",
+  basePath: "/neural-organization",
+  images: {
+    unoptimized: true,
+  },
   // Optimize package imports for Framer Motion and Radix UI
   experimental: {
     optimizePackageImports: ["framer-motion", "@radix-ui/react-dialog", "@radix-ui/react-tooltip", "@radix-ui/react-tabs"],
