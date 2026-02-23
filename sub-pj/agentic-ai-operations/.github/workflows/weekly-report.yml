@@ -1,0 +1,33 @@
+name: Weekly Report Generation
+
+on:
+  schedule:
+    # Run every Sunday at 23:00 UTC
+    - cron: '0 23 * * 0'
+  workflow_dispatch:
+    inputs:
+      week:
+        description: 'Week number (optional)'
+        required: false
+        type: number
+      year:
+        description: 'Year (optional)'
+        required: false
+        type: number
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Generate weekly report
+        run: |
+          BODY='{}'
+          if [ -n "${{ github.event.inputs.week }}" ]; then
+            BODY='{"week": ${{ github.event.inputs.week }}, "year": ${{ github.event.inputs.year || 2026 }}}'
+          fi
+
+          curl -X POST "${{ secrets.APP_URL }}/api/reports/generate" \
+            -H "Content-Type: application/json" \
+            -H "x-api-key: ${{ secrets.ADMIN_API_KEY }}" \
+            -d "$BODY"
