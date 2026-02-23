@@ -8,7 +8,7 @@ This directory contains the complete design documentation for Neural Organizatio
 |---|---|---|---|
 | [concept.md](concept.md) | Vision, philosophy, and strategy | 482 | 25 min |
 | [design.md](design.md) | Layer-by-layer detailed design with examples and models | 372 | 20 min |
-| [neural-organization-5-layer-framework.md](neural-organization-5-layer-framework.md) | Framework master reference (5 layers + 4 crosscutting) | 320 | 15 min |
+| [framework.md](framework.md) | Framework master reference (5 layers + 4 crosscutting) | 320 | 15 min |
 | [invariant-principles.md](invariant-principles.md) | Immutable axioms that constrain all design | 252 | 12 min |
 | [agentic-ai-framework.md](agentic-ai-framework.md) | Reusable 8-step framework for building Agentic AI | 575 | 30 min |
 | [ax-company-design.md](ax-company-design.md) | Sub-project alignment audit and integration roadmap | 570 | 30 min |
@@ -20,7 +20,7 @@ This directory contains the complete design documentation for Neural Organizatio
 Start here to understand what Neural Organization is and why it exists.
 
 1. **concept.md** -- Core thesis: organizations are being redefined by AGI
-2. **neural-organization-5-layer-framework.md** -- The 5-layer architecture at a glance
+2. **framework.md** -- The 5-layer architecture at a glance
 3. **invariant-principles.md** -- The 5 axioms that never change
 
 ### For Designers
@@ -36,7 +36,7 @@ Extend or modify the architecture with full context.
 
 Build Agentic AI products that conform to Neural Organization.
 
-1. **neural-organization-5-layer-framework.md** -- Architecture overview
+1. **framework.md** -- Architecture overview
 2. **design.md** -- Technical specifications per layer
 3. **agentic-ai-framework.md** -- Step-by-step construction guide
 4. **philosophy/** -- Reference as needed for specific layers
@@ -75,7 +75,7 @@ concept.md ◄──────────────────── invar
   │        └──► philosophy/ (10 files)
   │              "Deep Design Philosophy"
   │
-  ├──► neural-organization-5-layer-framework.md
+  ├──► framework.md
   │      "Framework Reference"
   │
   ├──► agentic-ai-framework.md
