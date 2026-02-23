@@ -220,6 +220,163 @@ Governance Gate 評価:
 
 人間の注意は、**品質確認**ではなく、**価値判断・倫理判断・戦略判断**— 人間にしかできない判断 — に集中する。
 
+### Context Budget（人間の注意予算）
+
+不変原理「コンテキストは有限資源」（[invariant-principles.md](../invariant-principles.md) 原理4）は、人間の注意を「予算」として定量化し、Governance Gate に到達する情報量を制御する必要性を主張する。
+
+**原理4 の形式的表現**:
+```
+human_attention_budget = available_attention - governance_overhead
+governance_overhead <= 0.20 * available_attention  (上限)
+```
+
+この制約は、二重フィルタリングが単なる品質保証ではなく、**人間の認知容量を保護するメカニズム**であることを明示する。
+
+#### 参与形態別の注意予算
+
+各参与形態は、週あたりの利用可能な注意容量が異なる。
+
+```yaml
+attention_budget_by_role:
+  governor:
+    weekly_capacity: "2 hours"
+    allocation:
+      strategic_decisions: 0.50    # 1h/week
+      governance_gate_review: 0.30  # 36min/week
+      system_health_check: 0.20    # 24min/week
+
+    overload_threshold: "承認待ち件数 > 5件/日"
+    overload_response: |
+      信頼スコアの高い領域（trust_score > 0.85）の Gate 閾値を
+      一時的に引き上げ、自律実行の範囲を拡大
+
+  sensemaker:
+    weekly_capacity: "3 hours"
+    allocation:
+      qualitative_input: 0.50       # 1.5h/week
+      system_verification: 0.30     # 54min/week
+      blind_spot_identification: 0.20  # 36min/week
+
+    overload_threshold: "入力要求 > 10件/週"
+    overload_response: "優先度の低い入力要求を翌週に延期"
+
+  creator:
+    weekly_capacity: "variable (継続的)"
+    allocation:
+      ideation: "非構造的（創造活動は予算化しない）"
+      system_feedback: 0.20
+
+  connector:
+    weekly_capacity: "variable (対人関係構築)"
+    allocation:
+      relationship_building: "非構造的"
+      system_integration: 0.10
+
+  custodian:
+    weekly_capacity: "5 hours"
+    allocation:
+      monitoring: 0.40              # 2h/week
+      ethical_review: 0.30          # 1.5h/week
+      rule_setting: 0.30            # 1.5h/week
+
+    overload_threshold: "アラート > 15件/週"
+    overload_response: "軽微なアラートを抑制、重大度の高いもののみ表示"
+```
+
+#### Gate 通過率の予算制約
+
+二重フィルタリングの「全体の20%のみが人間に到達」という設計は、原理4 の `governance_overhead <= 0.20 * available_attention` を実装したものである。
+
+```yaml
+gate_throughput_budget:
+  total_proposals_per_week: 100  # システムが生成する提案総数
+
+  stage_1_self_evaluation:
+    input: 100
+    auto_rejected: 30  # 品質・整合性・リスク基準で不合格
+    output: 70
+
+  stage_2_governance_gate:
+    input: 70
+    auto_approved: 50  # 低リスク・低影響・高信頼領域
+    requires_human_approval: 20
+
+  human_attention_consumed:
+    proposals_to_review: 20
+    avg_time_per_proposal: "5 minutes"
+    total_time: "100 minutes/week = 1.67 hours/week"
+
+  budget_compliance:
+    governor_budget: "2 hours/week"
+    consumed: "1.67 hours"
+    remaining: "0.33 hours (20 minutes)"
+    status: "within budget"
+```
+
+#### 予算オーバーフロー時の対策
+
+人間の注意予算が枯渇しそうな場合、システムは以下の対策を自律的に実行する。
+
+```yaml
+overflow_mitigation:
+  trigger_conditions:
+    - "承認待ちキューの深さ > 閾値"
+    - "週次予算の 80% を水曜日までに消費"
+    - "複数の参与形態が同時にオーバーロード"
+
+  mitigation_strategies:
+    priority_1_defer_low_priority:
+      description: "優先度の低い提案を翌週に延期"
+      criteria: "priority < 0.50"
+      expected_reduction: "20-30%"
+
+    priority_2_batch_similar:
+      description: "類似した提案をバッチ化して一括承認"
+      criteria: "同一カテゴリ・同一リスクレベル"
+      expected_reduction: "15-20%"
+
+    priority_3_raise_autonomy:
+      description: "信頼スコアの高い領域の自律範囲を一時的に拡大"
+      criteria: "trust_score > 0.85 and historical_approval_rate > 0.95"
+      expected_reduction: "30-40%"
+      duration: "一時的（翌週には元に戻す）"
+
+    priority_4_escalate:
+      description: "人間に予算枯渇を通知し、優先度の再評価を依頼"
+      trigger: "上記3策でも解消しない場合"
+```
+
+#### Context Budget と Trust Score の相互作用
+
+信頼スコアの向上は、Governance Gate を通過する提案数を自然減少させ、人間の注意予算を保全する。
+
+```yaml
+trust_score_impact_on_budget:
+  scenario_low_trust:
+    trust_score: 0.40  # Cold Start
+    auto_approval_rate: 0.10  # 10% のみ自律実行
+    human_review_required: 0.90  # 90% が承認必要
+    attention_consumed: "9 hours/week（予算を大幅超過）"
+
+  scenario_medium_trust:
+    trust_score: 0.70  # Learning → Trusted
+    auto_approval_rate: 0.50  # 50% 自律実行
+    human_review_required: 0.50
+    attention_consumed: "5 hours/week（予算内）"
+
+  scenario_high_trust:
+    trust_score: 0.90  # Highly Trusted
+    auto_approval_rate: 0.85  # 85% 自律実行
+    human_review_required: 0.15
+    attention_consumed: "1.5 hours/week（予算の 75% が空く）"
+
+  insight: |
+    信頼の蓄積は、人間の注意を戦略的判断に再配分できることを意味する。
+    Cold Start では予算の大半が承認作業に消費されるが、
+    Highly Trusted に到達すれば、人間は新しい領域の探索や
+    Purpose の進化に注意を向けられる。
+```
+
 ## 信頼の蓄積と自律範囲の拡大
 
 ### 信頼スコアの算出

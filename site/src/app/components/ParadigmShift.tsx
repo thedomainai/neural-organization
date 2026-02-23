@@ -39,35 +39,33 @@ export default function ParadigmShift() {
   return (
     <section id="paradigm" className="section">
       <div className="section-container">
-        <div className="section-label">Paradigm Shift</div>
-        <h2 className="section-title">
-          なぜ組織は
-          <br />
-          今の形をしているのか
-        </h2>
-        <p className="section-desc" style={{ marginBottom: "var(--space-5)" }}>
-          現在の組織構造のすべては「知能が希少である」という制約への適応である。AGI
-          はこの前提を溶解させる。
-        </p>
-        <p
-          className="text-body-lg"
-          style={{
-            color: "var(--text-secondary)",
-            maxWidth: 640,
-            marginBottom: "var(--space-9)",
-          }}
-        >
-          部門、階層、肩書、会議、プロセス。これらは人間の認知能力の限界を補うために発明されたものであり、
-          知能が無限にスケールする時代には、その存在理由が消滅する。
-        </p>
+        <div style={{ maxWidth: 900, margin: "0 auto" }}>
+          <div className="section-label">Paradigm Shift</div>
+          <h2 className="section-title">
+            なぜ組織は
+            <br />
+            今の形をしているのか
+          </h2>
+          <p className="section-desc" style={{ marginBottom: "var(--space-5)" }}>
+            現在の組織構造のすべては「知能が希少である」という制約への適応である。AGI はこの前提を溶解させる。
+          </p>
+          <p
+            className="text-body-lg"
+            style={{
+              color: "var(--text-secondary)",
+              marginBottom: "var(--space-9)",
+            }}
+          >
+            部門、階層、肩書、会議、プロセス。これらは人間の認知能力の限界を補うために発明されたものであり、知能が無限にスケールする時代には、その存在理由が消滅する。
+          </p>
 
-        {/* Shift table */}
-        <div
-          style={{
-            marginBottom: "var(--space-10)",
-            overflowX: "auto",
-          }}
-        >
+          {/* Shift table */}
+          <div
+            style={{
+              marginBottom: "var(--space-10)",
+              overflowX: "auto",
+            }}
+          >
           <table
             style={{
               width: "100%",
@@ -137,27 +135,21 @@ export default function ParadigmShift() {
           </table>
         </div>
 
-        {/* Human roles */}
-        <div className="section-label">Human Roles</div>
-        <h3
-          className="text-heading-lg"
-          style={{ marginBottom: "var(--space-5)" }}
-        >
-          人間は「仕事をする」のではなく
-          <br />
-          「組織知能に参与する」
-        </h3>
-        <p className="section-desc" style={{ marginBottom: "var(--space-7)" }}>
-          AGI 時代の人間の役割は 5 つの参与形態に分類される。
-        </p>
+          {/* Human roles */}
+          <div className="section-label">Human Roles</div>
+          <h3
+            className="text-heading-lg"
+            style={{ marginBottom: "var(--space-5)" }}
+          >
+            人間は「仕事をする」のではなく
+            <br />
+            「組織知能に参与する」
+          </h3>
+          <p className="section-desc" style={{ marginBottom: "var(--space-7)" }}>
+            AGI 時代の人間の役割は 5 つの参与形態に分類される。
+          </p>
 
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
-            gap: "var(--space-5)",
-          }}
-        >
+          <div className="roles-grid">
           {roles.map((role, i) => (
             <div
               key={role.name}
@@ -192,6 +184,7 @@ export default function ParadigmShift() {
               </p>
             </div>
           ))}
+          </div>
         </div>
       </div>
     </section>

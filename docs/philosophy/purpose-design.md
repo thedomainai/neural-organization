@@ -421,6 +421,162 @@ Purpose の重み付け:
 結論: B を選択（スコアが高い）
 ```
 
+#### Intent-Based Routing — Purpose から Execution への接続
+
+Purpose（人間の意志）がどのように具体的な実行リソースに変換されるかは、3段階のルーティングプロセスを経る。これは不変原理「能力による間接参照」（[invariant-principles.md](../invariant-principles.md) 原理1）と不変量 I6「分類と解決の分離」の実装である。
+
+**ルーティングの3段階**:
+
+```
+Stage 1: Intent Classification（意図の分類）
+  Input: 人間の意志・ユーザー入力・Purpose の Where
+  Output: Intent（意図）
+
+Stage 2: Capability Requirement（能力要件）
+  Input: Intent
+  Output: CapabilityRequirement（必要な能力）
+
+Stage 3: Resource Resolution（リソース解決）
+  Input: CapabilityRequirement
+  Output: ExecutionResource（実行リソース）
+  Source: Layer 3 Capability Registry
+```
+
+**形式的表現**（原理1より）:
+```
+delegate(action) = resolve(classify(action))
+  where classify: Action → CapabilityRequirement
+        resolve:  CapabilityRequirement → ExecutionResource
+```
+
+**Stage 1 の具体例: Intent Classification**
+
+人間の意志は曖昧である（「顧客との関係をもっと深めたい」）。これを構造化された意図に分類する。
+
+```yaml
+intent_classification:
+  user_input: "顧客との関係をもっと深めたい"
+
+  classification_process:
+    step_1_decompose:
+      keywords: ["顧客", "関係", "深める"]
+      context: "健全性スコアが低下している顧客が増加"
+      purpose_reference: "Purpose Where: 顧客維持率 95%"
+
+    step_2_classify:
+      intent: "customer_relationship_strengthening"
+      sub_intents:
+        - "proactive_communication"
+        - "value_demonstration"
+        - "feedback_collection"
+
+    step_3_prioritize:
+      selected_intent: "proactive_communication"
+      reasoning: "最も即効性があり、コストが低い"
+```
+
+**Stage 2 の具体例: Capability Requirement**
+
+意図を実現するために必要な能力を特定する。
+
+```yaml
+capability_mapping:
+  intent: "proactive_communication"
+
+  capability_requirements:
+    primary: "communication_generation"
+    secondary:
+      - "customer_data_analysis"  # 誰にアウトリーチするか
+      - "timing_optimization"     # いつアウトリーチするか
+
+  context_passed_to_capability:
+    quality_requirement: "high"  # Purpose How の「顧客中心」から
+    tone: "supportive"           # Purpose How の価値観から
+    urgency: "medium"            # 健全性スコア低下は緊急ではないが重要
+```
+
+**Stage 3 の具体例: Resource Resolution**
+
+Capability Registry（[layer3-execution-design.md](layer3-execution-design.md) Capability Registry）を参照し、実行リソースを選択する。
+
+```yaml
+resource_resolution:
+  capability: "communication_generation"
+
+  registry_lookup:
+    resolve_chain:
+      - resource: "email_generation_llm_v2"
+        confidence: 0.88
+        cost: 0.05
+        latency_ms: 3200
+
+      - resource: "email_generation_llm_v1"
+        confidence: 0.75
+        cost: 0.02
+        latency_ms: 2100
+
+      - resource: "template_based_generator"
+        confidence: 0.50
+        cost: 0.001
+        latency_ms: 100
+
+  selection_decision:
+    selected: "email_generation_llm_v2"
+    reasoning: |
+      quality_requirement が "high" であるため、
+      confidence 0.88 の primary resource を選択。
+      コスト $0.05 は予算内。
+```
+
+**Intent-Based Routing と既存の Reasoning 設計の関係**
+
+Intent-Based Routing は、Reasoning のステップ2「機会の特定」とステップ5「領域横断構成」の**前処理**として機能する。
+
+```
+Traditional flow:
+  Purpose → Reasoning → 行動計画 → Execution
+
+Enhanced flow with Intent-Based Routing:
+  Purpose → Intent Classification → Capability Requirement
+  ↓
+  Reasoning（capability を前提として機会を特定）
+  ↓
+  行動計画 → Resource Resolution → Execution
+```
+
+これにより、Reasoning は「何をするか」に集中でき、「誰がやるか」の判断から解放される。
+
+**Intent-Based Routing の進化**
+
+Stage 1 の Intent Classification は、初期はルールベース（キーワードマッチング）だが、Layer 4 Reflection による学習で精緻化される。
+
+```yaml
+classification_learning:
+  initial_rules:
+    - keyword: "関係"
+      intent: "customer_relationship_strengthening"
+      confidence: 0.60
+
+  learned_patterns:
+    observations:
+      - user_input: "顧客との関係をもっと深めたい"
+        human_selected_action: "proactive_communication"
+        success: true
+
+      - user_input: "もっと顧客の声を聞きたい"
+        human_selected_action: "feedback_collection"
+        success: true
+
+    refined_rules:
+      - keyword: "関係" AND context: "健全性低下"
+        intent: "proactive_communication"
+        confidence: 0.85
+
+      - keyword: "声を聞く" OR keyword: "フィードバック"
+        intent: "feedback_collection"
+        confidence: 0.90
+```
+
 ### Layer 3 (Execution) への作用
 
 Purpose は「どのように実行するか」に影響する。

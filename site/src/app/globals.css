@@ -346,6 +346,7 @@ body {
 .card:hover {
   border-color: var(--neutral-400);
   box-shadow: var(--glow-subtle);
+  transform: translateY(-2px);
 }
 
 /* ============================================================
@@ -384,6 +385,11 @@ body {
 .btn-primary:hover {
   background: var(--interactive-hover);
   box-shadow: var(--glow-medium);
+  transform: translateY(-1px);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
 }
 
 .btn-secondary {
@@ -395,6 +401,11 @@ body {
 .btn-secondary:hover {
   border-color: var(--neutral-500);
   box-shadow: var(--glow-subtle);
+  transform: translateY(-1px);
+}
+
+.btn-secondary:active {
+  transform: translateY(0);
 }
 
 .btn-ghost {
@@ -520,6 +531,18 @@ body {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+}
+
+/* ============================================================
+   Grid Utilities
+   ============================================================ */
+
+.roles-grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  max-width: 900px;
+  margin: 0 auto;
 }
 
 /* ============================================================

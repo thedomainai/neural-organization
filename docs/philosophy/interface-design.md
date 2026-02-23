@@ -706,3 +706,364 @@ Interface は Neural Organization と人間の「共生の界面」である。
 7. **Mutual Evolution**: 人間とシステムが相互に高め合う
 
 この Interface により、人間は組織知能と協働し、より高度な判断に集中し、組織は人間とシステムの共生体として機能する。
+
+## Slack Interface Implementation
+
+### 設計の動機
+
+ユーザー提案「AI が Slack で常に独り言として思考・判断を可視化し、人間が観察・参加できる形」は、Neural Organization の設計原理と極めて高い親和性を持つ。
+
+**原理との適合性**:
+
+| 設計原理 | 適合度 | 実現方法 |
+|---------|--------|---------|
+| Ambient Presence | ✓✓✓ 完璧 | 人間の日常のコミュニケーション空間に常に共存 |
+| Radical Transparency | ✓✓✓ 完璧 | すべての思考・判断・行動が時系列ログとして自動的に可視化 |
+| Governance, not Control | ✓✓ 適合 | 人間は観察し、必要に応じて介入する統治者 |
+| Mutual Evolution | ✓✓ 適合 | 会話履歴が自然に学習データとなる |
+| Context as Currency | ⚠️ 要設計 | 情報過多を防ぐ設計が必須（最大の課題） |
+
+### アーキテクチャ
+
+```
+Slack（活動ストリーム）+ Web Dashboard（統合ビュー）+ Interactive Messages（承認界面）
+```
+
+**役割分担**:
+- **Slack**: リアルタイムな活動の時系列ストリーム（Ambient Presence）
+- **Web**: 統合的な現状ビュー（Command Center）
+- **相互リンク**: Slack ↔ Web で詳細情報とコンテキストを行き来
+
+### 情報のレベル分けと選択的可視化
+
+**原理4（Context as Currency）の遵守のため、AI の発言を5段階に分類：**
+
+```yaml
+発言レベル:
+  ALERT:      # 即座に人間の注意が必要
+    例: 解約申請、システム異常、予算超過アラート
+    visibility: 強制通知
+    channel: "#neural-org-core"
+    推定注意コスト: 5分/件
+
+  GOVERNANCE: # 承認要求
+    例: 価格変更、戦略的判断、不可逆なアクション
+    visibility: 強制通知
+    channel: "#neural-org-governance"
+    推定注意コスト: 10分/件
+
+  INSIGHT:    # 能動的な発見
+    例: 人間が知らないパターン、市場変化の検出
+    visibility: デフォルト表示
+    channel: "#neural-org-insights"
+    推定注意コスト: 2分/件
+
+  DECISION:   # 自律実行した判断
+    例: Trust Score > 0.7 で自動承認された行動
+    visibility: デフォルト表示（詳細はオプトイン）
+    channel: ドメイン別チャネル
+    推定注意コスト: 0.5分/件
+
+  THOUGHT:    # 思考プロセス
+    例: L1 の世界モデル更新、L2 の推論過程
+    visibility: オプトイン購読のみ
+    channel: "#neural-org-reasoning"
+    推定注意コスト: 予算外（購読者の自己責任）
+```
+
+**人間の注意予算の定量化**（原理4の実装）:
+
+```yaml
+daily_attention_budget:
+  total: 60分  # デフォルト想定
+
+  limits:
+    ALERT: 最大12件/日（5分 × 12 = 60分）
+    GOVERNANCE: 最大6件/日（10分 × 6 = 60分）
+    INSIGHT: 最大30件/日（2分 × 30 = 60分）
+    DECISION: 制限なし（通知のみ、詳細はオプトイン）
+    THOUGHT: 制限なし（オプトイン購読）
+
+  enforcement:
+    - システムは1日の発言量をこの予算内に収める責任を持つ
+    - 予算超過が予測される場合、優先度の低い INSIGHT を抑制
+    - ALERT と GOVERNANCE は常に通知（最優先）
+```
+
+### チャネル構造
+
+```yaml
+channels:
+  # コアチャネル（全員必須購読）
+  "#neural-org-core":
+    content: Purpose、戦略的判断、ALERT
+    subscribers: Governor 必須、他は推奨
+
+  "#neural-org-governance":
+    content: 承認待ちの判断
+    subscribers: Governor 必須
+
+  "#neural-org-insights":
+    content: システムが発見したパターン
+    subscribers: 全員推奨
+
+  # ドメイン別チャネル（関係者が購読）
+  "#neumann-cycle":
+    content: 経営管理サイクルの DECISION
+    subscribers: 経営陣、CFO
+
+  "#sales-cycle":
+    content: 営業サイクルの DECISION
+    subscribers: 営業チーム、CSM
+
+  "#hr-cycle":
+    content: 人事サイクルの DECISION
+    subscribers: HR、経営陣
+
+  "#analysis-cycle":
+    content: 分析サイクルの DECISION
+    subscribers: データアナリスト、経営陣
+
+  # 詳細ログチャネル（オプトイン）
+  "#neural-org-reasoning":
+    content: Layer 2 推論プロセス（THOUGHT）
+    subscribers: オプトイン
+
+  "#neural-org-execution":
+    content: Layer 3 実行ログ（THOUGHT）
+    subscribers: オプトイン
+
+  "#neural-org-reflection":
+    content: Layer 4 学習・改善提案（週次レビュー用）
+    subscribers: オプトイン
+```
+
+### Governance Interface の実現
+
+**Slack Interactive Messages で承認 UI を埋め込む：**
+
+```yaml
+governance_message_format:
+  header:
+    emoji: "🚨"
+    title: "承認が必要です"
+
+  body:
+    summary: "エンタープライズプランの価格を 20% 引き下げる"
+
+    expected_impact:
+      - "✅ 新規契約: +60%"
+      - "⚠️ 売上: -$50K/月"
+
+    metadata:
+      confidence: "65%"
+      historical_context: "類似判断15件中12件成功"
+
+    links:
+      detailed_analysis: "[Webで開く]"
+      past_similar_decisions: "[3件を表示]"
+
+  actions:
+    - label: "✅ 承認"
+      action: "approve"
+
+    - label: "✏️ 修正して承認"
+      action: "approve_with_modification"
+
+    - label: "❌ 却下"
+      action: "reject"
+
+    - label: "💬 質問する"
+      action: "request_more_info"
+```
+
+**人間のリアクションも学習データ**:
+
+人間の承認/却下/修正の全てが会話ログとして記録され、Layer 4 の Reflection の入力データになる。
+
+### Intent Interface の実現
+
+**会話形式で意志を受け取り、構造化して確認：**
+
+```yaml
+intent_conversation:
+  human_message: "顧客維持率を95%まで向上させたい"
+
+  ai_response:
+    acknowledgment: "承知しました 📊"
+
+    current_state_summary:
+      - "現在: 88%"
+      - "目標: 95% (+7% improvement)"
+
+    clarification_questions:
+      - field: "Where（方向）"
+        value: "retention_rate = 0.95"
+        confirm: true
+
+      - field: "Timeline"
+        question: "いつまでに達成したいですか？"
+        suggestion: "2024-Q3（推奨）"
+
+      - field: "How（価値観）"
+        value: "短期収益よりも顧客維持を優先"
+        confirm: true
+
+      - field: "Boundary"
+        question: "予算制約はありますか？"
+
+    confirmation_ui:
+      - button: "Yes, これで進めて"
+      - button: "いいえ、修正したい"
+
+  on_confirmation:
+    action: "Purpose に追加・更新"
+    format: "YAML として永続化"
+    notification: "#neural-org-core に通知"
+```
+
+### Sensemaker Interface の実現
+
+**人間が Slack で定性的情報を伝えると、AI が構造化：**
+
+```yaml
+sensemaker_conversation:
+  csm_message: |
+    今日、顧客 Acme の John と話しました。
+    データ上は健全だけど、何か違和感がありました。
+
+  ai_response:
+    acknowledgment: "重要なインサイトをありがとうございます 🔍"
+
+    clarification:
+      question: "具体的にどのような点が気になりましたか？"
+      options:
+        - "会話のトーン"
+        - "特定のトピックへの反応"
+        - "言及された競合"
+        - "その他（自由記述）"
+
+  csm_reply: |
+    会話のトーン。通常は雑談があるのに、
+    今日は業務的でした。
+
+  ai_action:
+    recorded: "定性的フィードバックを記録"
+    action_taken:
+      - "Acme 社の健全性スコアを 'attention_required' にマーク"
+      - "2週間以内の再接触をスケジュール"
+
+    related_context:
+      - "Acme社は先月、CFO が交代しています"
+      - "コスト見直しの可能性があります"
+
+    cross_notification: "#sales-cycle にも通知しました"
+```
+
+### Transparency Interface の実現
+
+**スレッドでの「なぜ？」質問 + Web 詳細ビューへのリンク：**
+
+```yaml
+transparency_interaction:
+  ai_decision_post:
+    channel: "#sales-cycle"
+    message: "顧客 X の解約リスクを 'high' と評価しました"
+
+  human_question:
+    type: "thread_reply"
+    message: "なぜ？"
+
+  ai_response:
+    summary:
+      risk_score: "0.75"
+      top_factors:
+        - "ログイン頻度 -40%（寄与度 35%）"
+        - "サポートチケット +150%（寄与度 25%）"
+
+    reasoning_brief: |
+      過去の類似パターンでは 80% が解約しており、
+      主な前兆が顕著に現れています。
+
+    detailed_link: "[詳細な因果分析を見る（Web）]"
+```
+
+### Web Dashboard との統合
+
+**相互リンク機能**:
+
+```yaml
+slack_to_web:
+  example: "[詳細を見る]ボタン"
+  destination: "Web Dashboard の該当セクション"
+  context_preserved: "Slack のメッセージ ID を Web に渡し、関連データを表示"
+
+web_to_slack:
+  example: "この判断の経緯"リンク
+  destination: "Slack の会話スレッド"
+  use_case: "Web で数値を見て、判断の背景を Slack で確認"
+```
+
+### 既存の 5 モードとの対応
+
+| モード | Slack での実現方法 |
+|--------|-------------------|
+| Intent Interface | 会話 → AI が構造化 → 確認 → Purpose 更新 |
+| Governance Interface | Interactive Messages による承認 UI |
+| Sensemaker Interface | 自然な会話での定性的情報の伝達 |
+| Transparency Interface | スレッドでの質問 + Web 詳細ビューへのリンク |
+| Command Center | Web Dashboard（Slack からリンク） |
+
+### 実装フェーズ
+
+```yaml
+phase_1_core_channels:
+  scope:
+    - "#neural-org-core"
+    - "#neural-org-governance"
+  features:
+    - ALERT と GOVERNANCE のみ可視化
+    - Interactive Messages による承認 UI
+  duration: "1-2 months"
+
+phase_2_domain_channels:
+  scope:
+    - "#neumann-cycle", "#sales-cycle", "#hr-cycle", "#analysis-cycle"
+  features:
+    - INSIGHT と DECISION の可視化
+    - ドメイン別のフィルタリング
+  duration: "1-2 months"
+
+phase_3_detailed_logs:
+  scope:
+    - "#neural-org-reasoning", "#neural-org-execution", "#neural-org-reflection"
+  features:
+    - THOUGHT レベルの可視化（オプトイン）
+    - 詳細な実行トレースログ
+  duration: "1 month"
+
+phase_4_web_integration:
+  scope: "Slack ↔ Web Dashboard の統合"
+  features:
+    - 相互リンク機能
+    - コンテキストの受け渡し
+  duration: "1-2 months"
+```
+
+### 設計上の利点
+
+1. **コンテキストの連続性**: 会話ログが時系列で保存され、「なぜその判断に至ったか」が自動的に保全される
+2. **低負荷な監督**: 新しい UI を覚える必要がなく、既存のコミュニケーション空間で完結
+3. **非同期的な参与**: リアルタイム監視不要、自分のタイミングで確認・介入可能
+4. **自然な学習データ**: 人間の介入（メッセージ）が自然に学習データとなる
+5. **段階的な透明性**: 要約を Slack で、詳細を Web で、という使い分けが可能
+
+### 設計上の課題と対策
+
+| 課題 | 対策 |
+|------|------|
+| 情報過多（Context as Currency 原理との衝突） | 5段階のレベル分け + 注意予算の定量化 |
+| 複数エージェントの会話の整理 | ドメイン別チャネル + スレッド活用 |
+| Governance Gate との統合 | Slack Interactive Messages で承認 UI を埋め込み |
+| Intent の構造化 | 会話で受け取り、AI が構造化、確認を求める |
+| Command Center との関係 | Slack（ストリーム）+ Web（統合ビュー）のハイブリッド |

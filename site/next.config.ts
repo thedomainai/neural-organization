@@ -1,5 +1,15 @@
 import type { NextConfig } from "next";
+import bundleAnalyzer from "@next/bundle-analyzer";
 
-const nextConfig: NextConfig = {};
+const withBundleAnalyzer = bundleAnalyzer({
+  enabled: process.env.ANALYZE === "true",
+});
 
-export default nextConfig;
+const nextConfig: NextConfig = {
+  // Optimize package imports for Framer Motion and Radix UI
+  experimental: {
+    optimizePackageImports: ["framer-motion", "@radix-ui/react-dialog", "@radix-ui/react-tooltip", "@radix-ui/react-tabs"],
+  },
+};
+
+export default withBundleAnalyzer(nextConfig);

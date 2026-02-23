@@ -1,0 +1,177 @@
+/* Hero Section Styles */
+
+.hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-11) var(--space-6) var(--space-10);
+  overflow: hidden;
+}
+
+/* Background Layers */
+.bgGradient {
+  position: absolute;
+  inset: 0;
+  background: var(--gradient-hero);
+  pointer-events: none;
+}
+
+.bgMesh {
+  position: absolute;
+  inset: 0;
+  background: var(--gradient-mesh);
+  pointer-events: none;
+}
+
+.bgOrb {
+  position: absolute;
+  top: 20%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 600px;
+  height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(80, 104, 164, 0.12) 0%,
+    rgba(142, 124, 180, 0.06) 40%,
+    transparent 70%
+  );
+  filter: blur(40px);
+  pointer-events: none;
+  animation: orbPulse 8s ease-in-out infinite;
+}
+
+@keyframes orbPulse {
+  0%,
+  100% {
+    transform: translateX(-50%) scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: translateX(-50%) scale(1.1);
+    opacity: 0.8;
+  }
+}
+
+/* Content Container */
+.content {
+  position: relative;
+  text-align: center;
+  max-width: 800px;
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity var(--duration-slower) var(--ease-out),
+    transform var(--duration-slower) var(--ease-out);
+}
+
+.content.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.badge {
+  margin-bottom: var(--space-6);
+  opacity: 0;
+  animation: fadeInUp var(--duration-slower) var(--ease-out) 0.1s forwards;
+}
+
+.heading {
+  margin-bottom: var(--space-6);
+  opacity: 0;
+  animation: fadeInUp var(--duration-slower) var(--ease-out) 0.2s forwards;
+}
+
+.description {
+  color: var(--text-secondary);
+  max-width: 600px;
+  margin: 0 auto var(--space-8);
+  opacity: 0;
+  animation: fadeInUp var(--duration-slower) var(--ease-out) 0.3s forwards;
+}
+
+.ctaGroup {
+  display: flex;
+  gap: var(--space-4);
+  justify-content: center;
+  flex-wrap: wrap;
+  opacity: 0;
+  animation: fadeInUp var(--duration-slower) var(--ease-out) 0.4s forwards;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-7);
+  max-width: 600px;
+  margin: var(--space-10) auto 0;
+  opacity: 0;
+  animation: fadeInUp var(--duration-slower) var(--ease-out) 0.5s forwards;
+}
+
+.statValue {
+  font-size: 36px;
+  font-weight: 300;
+  line-height: 1.1;
+}
+
+.statLabel {
+  color: var(--text-muted);
+  margin-top: var(--space-2);
+}
+
+/* Responsive */
+@media (max-width: 1023px) {
+  .bgOrb {
+    width: 400px;
+    height: 400px;
+  }
+
+  .statValue {
+    font-size: 28px;
+  }
+}
+
+@media (max-width: 639px) {
+  .hero {
+    padding: var(--space-10) var(--space-5) var(--space-9);
+  }
+
+  .bgOrb {
+    width: 300px;
+    height: 300px;
+  }
+
+  .stats {
+    gap: var(--space-5);
+  }
+
+  .statValue {
+    font-size: 24px;
+  }
+
+  .ctaGroup {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+/* Reduce motion accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .bgOrb {
+    animation: none;
+  }
+
+  .content,
+  .badge,
+  .heading,
+  .description,
+  .ctaGroup,
+  .stats {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}

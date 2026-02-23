@@ -1,3 +1,9 @@
+'use client';
+
+import { useInView } from '../hooks/useInView';
+import HeroBackground from './HeroBackground';
+import styles from './Hero.module.css';
+
 interface HeroProps {
   variant: "customer" | "investor";
 }
@@ -16,9 +22,9 @@ const content = {
     primaryCta: { label: "思想を知る", href: "#paradigm" },
     secondaryCta: { label: "変容プロセスを見る", href: "#transformation" },
     stats: [
-      { value: "7", label: "Cognitive Systems" },
-      { value: "5", label: "Human Roles" },
-      { value: "4", label: "Transformation Phases" },
+      { value: "5", label: "Layers" },
+      { value: "4", label: "Moats" },
+      { value: "173%", label: "ROI" },
     ],
   },
   investor: {
@@ -36,93 +42,40 @@ const content = {
     secondaryCta: { label: "戦略的ポジション", href: "#strategy" },
     stats: [
       { value: "New", label: "Category" },
-      { value: "4", label: "Structural Moats" },
-      { value: "∞", label: "Scalable Intelligence" },
+      { value: "4", label: "Moats" },
+      { value: "173%", label: "ROI" },
     ],
   },
 };
 
 export default function Hero({ variant }: HeroProps) {
   const c = content[variant];
+  const [ref, isInView] = useInView<HTMLDivElement>({ triggerOnce: true });
 
   return (
-    <section
-      style={{
-        position: "relative",
-        minHeight: "100vh",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: "var(--space-11) var(--space-6) var(--space-10)",
-        overflow: "hidden",
-      }}
-    >
-      <div
-        style={{
-          position: "absolute",
-          inset: 0,
-          background: "var(--gradient-hero)",
-          pointerEvents: "none",
-        }}
-      />
-      <div
-        style={{
-          position: "absolute",
-          inset: 0,
-          background: "var(--gradient-mesh)",
-          pointerEvents: "none",
-        }}
-      />
-      <div
-        style={{
-          position: "absolute",
-          top: "20%",
-          left: "50%",
-          transform: "translateX(-50%)",
-          width: 600,
-          height: 600,
-          borderRadius: "50%",
-          background:
-            "radial-gradient(circle, rgba(80,104,164,0.12) 0%, rgba(142,124,180,0.06) 40%, transparent 70%)",
-          filter: "blur(40px)",
-          pointerEvents: "none",
-        }}
-      />
+    <section className={styles.hero}>
+      <div className={styles.bgGradient} />
+      <div className={styles.bgMesh} />
+      <div className={styles.bgOrb} />
+      <HeroBackground />
 
-      <div style={{ position: "relative", textAlign: "center", maxWidth: 800 }}>
-        <div
-          className="badge badge-primary"
-          style={{ marginBottom: "var(--space-6)" }}
-        >
+      <div
+        ref={ref}
+        className={`${styles.content} ${isInView ? styles.visible : ''}`}
+      >
+        <div className={`badge badge-primary ${styles.badge}`}>
           {c.badge}
         </div>
 
-        <h1
-          className="text-display-xl"
-          style={{ marginBottom: "var(--space-6)" }}
-        >
+        <h1 className={`text-display-xl ${styles.heading}`}>
           {c.heading}
         </h1>
 
-        <p
-          className="text-body-lg"
-          style={{
-            color: "var(--text-secondary)",
-            maxWidth: 600,
-            margin: "0 auto var(--space-8)",
-          }}
-        >
+        <p className={`text-body-lg ${styles.description}`}>
           {c.description}
         </p>
 
-        <div
-          style={{
-            display: "flex",
-            gap: "var(--space-4)",
-            justifyContent: "center",
-            flexWrap: "wrap",
-          }}
-        >
+        <div className={styles.ctaGroup}>
           <a href={c.primaryCta.href} className="btn btn-primary btn-lg">
             {c.primaryCta.label}
           </a>
@@ -131,30 +84,13 @@ export default function Hero({ variant }: HeroProps) {
           </a>
         </div>
 
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(3, 1fr)",
-            gap: "var(--space-7)",
-            maxWidth: 600,
-            margin: "var(--space-10) auto 0",
-          }}
-        >
+        <div className={styles.stats}>
           {c.stats.map((stat) => (
             <div key={stat.label}>
-              <div
-                className="gradient-text-glow"
-                style={{ fontSize: 36, fontWeight: 300, lineHeight: 1.1 }}
-              >
+              <div className={`gradient-text-glow ${styles.statValue}`}>
                 {stat.value}
               </div>
-              <div
-                className="text-body-sm"
-                style={{
-                  color: "var(--text-muted)",
-                  marginTop: "var(--space-2)",
-                }}
-              >
+              <div className={`text-body-sm ${styles.statLabel}`}>
                 {stat.label}
               </div>
             </div>

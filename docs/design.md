@@ -4,7 +4,7 @@
 
 ## 1. レイヤー別詳細設計
 
-### 1.1 Layer 0: Perception（知覚）— 接続ツール群
+### 1.1 Layer 0: Perception（検知）— 接続ツール群
 
 Perception が「現実世界への接続」を担うとき、具体的には以下の 7 カテゴリのツール群との接続を意味する。
 
@@ -26,7 +26,7 @@ Perception が「現実世界への接続」を担うとき、具体的には以
 
 > 詳細: [philosophy/tool-integration-design.md](philosophy/tool-integration-design.md)
 
-### 1.2 Layer 1: Understanding（理解）— エンティティモデル
+### 1.2 Layer 1: Understanding（解釈）— エンティティモデル
 
 Understanding が構築する「世界モデル」は、グラフ構造のエンティティとして実装される。以下に Customer エンティティの設計例を示す。
 

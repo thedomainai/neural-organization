@@ -53,6 +53,138 @@ Reflection は単なる「フィードバックループ」ではない。Percep
 
 ## Reflection のプロセス
 
+### ステップ 0: 実行トレースの構造
+
+Reflection が学習シグナルを抽出するためには、各層の実行イベントが構造化されたトレースとして記録されていることが前提となる。これは不変原理「計測なきシステムは収束しない」（[invariant-principles.md](../invariant-principles.md) 原理2）の直接的な実装である。
+
+#### トレースの4段階構造
+
+すべての実行イベントは以下の4段階の情報を記録する。
+
+| 段階 | 記録内容 | 例 |
+|------|---------|-----|
+| **分類（Classification）** | どの能力要件として分類されたか | 「顧客アウトリーチ」→ コミュニケーション生成能力 |
+| **解決（Resolution）** | どの実行リソースが選択されたか | メール生成エンジン（primary）、テンプレートベース（fallback） |
+| **実行（Execution）** | 入力・出力・コスト・所要時間 | プロンプト、生成されたメール、APIコスト $0.05、所要3秒 |
+| **結果（Outcome）** | 実際の結果とフィードバック | 開封率75%、人間による修正あり、修正内容:「トーンを柔らかく」 |
+
+#### トレースレコードのスキーマ
+
+```yaml
+execution_trace:
+  # メタ情報
+  trace_id: "tr_20260222_001"
+  timestamp: "2026-02-22T14:32:00Z"
+  session_id: "sess_20260222_abc"
+
+  # ステージ 1: 分類（Classification）
+  classification:
+    user_input_summary: "顧客 Acme Corp へのアウトリーチを検討"
+    intent: "customer_outreach"
+    capability_requirement: "communication_generation"
+    classification_confidence: 0.92
+    classification_reasoning: "健全性スコア低下への対応として、コミュニケーション生成が必要"
+
+  # ステージ 2: 解決（Resolution）
+  resolution:
+    capability: "communication_generation"
+    resolved_resource: "email_generation_llm"
+    resolve_chain:
+      - resource: "email_generation_llm"
+        confidence: 0.85
+        selected: true
+      - resource: "template_based_generator"
+        confidence: 0.60
+        selected: false
+        reason: "fallback"
+    resolution_reasoning: "高品質なパーソナライズが必要なため、LLM を選択"
+
+  # ステージ 3: 実行（Execution）
+  execution:
+    layer_sequence:
+      - layer: "L0_perception"
+        input: "データソース: Salesforce CRM, Intercom, analytics DB"
+        output: "シグナル検出: Acme の健全性スコア 68 (7日前: 82, -17%)"
+        latency_ms: 800
+        data_sources_accessed: ["salesforce_crm", "intercom_api", "analytics_db"]
+
+      - layer: "L1_understanding"
+        input: "シグナル: Acme 健全性スコア -17%, ログイン頻度 -40%"
+        output: "世界モデル更新: Acme をリスク顧客に分類、原因: v2.3 UX問題の可能性"
+        latency_ms: 1500
+        causal_model_updated: true
+        entity_updates: ["customer_acme_health_status"]
+
+      - layer: "L2_reasoning"
+        input: "世界モデル: Acme の健全性スコア 68、目標: 維持率向上"
+        output: "行動計画: プロアクティブアウトリーチメール送信"
+        latency_ms: 1200
+        alternatives_considered: 3
+        selected_rationale: "早期介入が解約防止に最も効果的"
+
+      - layer: "L3_execution"
+        input: "行動計画: メール生成"
+        output: "生成されたメール（250 words）"
+        latency_ms: 3200
+        quality_checks_passed: [true, true, true, true]
+        governance_gate: "auto_approved (trust_score: 0.82)"
+
+    total_cost_usd: 0.05
+    total_latency_ms: 4400
+    resources_consumed:
+      tokens_input: 450
+      tokens_output: 280
+
+  # ステージ 4: 結果（Outcome）— 後から埋まるフィールド
+  outcome:
+    immediate_feedback:
+      email_sent: true
+      email_delivered: true
+      timestamp: "2026-02-22T14:32:05Z"
+
+    short_term_outcome:
+      email_opened: true
+      open_timestamp: "2026-02-23T09:15:00Z"
+      email_replied: false
+      customer_health_score_change: null  # まだ不明
+
+    long_term_impact:
+      customer_retained: null  # 3ヶ月後に判明
+
+    human_feedback:
+      modified: true
+      modification_type: "tone_adjustment"
+      modification_summary: "「問題の指摘」→「サポート提供」のトーンに変更"
+      human_comment: "問題を指摘すると防御的になる可能性がある"
+      approval_status: "approved_with_modification"
+
+  # 反省（Reflection）フィールド — Layer 4 が後から記入
+  reflection:
+    delegation_useful: true
+    would_orchestrator_suffice: false
+    learned_pattern: "リスク顧客へのコミュニケーションではサポート提供を前面に出す"
+    layer_update_applied:
+      - layer: "L3_execution"
+        update: "tone_best_practice: customer_at_risk → support_forward"
+    confidence_score_adjustment:
+      before: 0.85
+      after: 0.88
+      reason: "成功事例が蓄積"
+```
+
+#### トレースの蓄積と活用
+
+**蓄積先**: Memory の評価記憶（evaluative memory）に構造化データとして保存
+
+**活用方法**:
+1. **リアルタイム学習**: outcome.human_feedback が記録されたら即座に Reflection ステップ 2-5 を実行
+2. **バッチ分析**: 週次・月次で全トレースを集計し、パターン抽出
+3. **Evolution Engine の入力**: Orchestration の自己改善（[orchestration-design.md](orchestration-design.md) Evolution Engine）の入力データ
+
+**不変量への適合**: 不変量 I2「実行トレースログ」（[invariant-principles.md](../invariant-principles.md) §2）を満たす構造
+
+---
+
 ### ステップ 1: 結果の観測と評価
 
 **Execution が生成したアウトプットが、期待した結果を生んだかを観測する**

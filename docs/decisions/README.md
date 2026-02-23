@@ -8,7 +8,7 @@ These ADRs serve as the institutional memory of *why* the architecture looks the
 
 ## Evolution Story
 
-The 6 ADRs trace a coherent evolution from initial product concept to the current architecture:
+The 10 ADRs trace a coherent evolution from initial product concept to the current architecture:
 
 ### Phase 1: Concept Formation (ADR 001-002)
 
@@ -37,6 +37,18 @@ ADR 003 designed a 7-layer pipeline. ADR 004 identified redundancies (Integratio
 
 ADR 005 reconciled v1.0's concrete operational designs with v2.0's principled architecture. ADR 006 integrated cross-project insights, confirming that Neural Organization's principles have universal applicability beyond organizational design.
 
+### Phase 4: Implementation Design (ADR 007-011)
+
+| ADR | Title | Key Question |
+|---|---|---|
+| [007](007-layer2-dual-mode-reasoning.md) | Layer 2 Dual-Mode Reasoning | How should Layer 2 integrate routine and emergent reasoning modes? |
+| [008](008-state-addressability-path-hierarchy.md) | State Addressability & Path Hierarchy | How should organizational state be addressable with path hierarchy? |
+| [009](009-phased-introduction-path.md) | Phased Introduction Path | What features should be introduced at each phase (Phase 1-4)? |
+| [010](010-openclaw-differentiation.md) | Openclaw Differentiation | How should Neural Organization differentiate from Openclaw's filesystem approach? |
+| [011](011-invariant-principles-integration.md) | Invariant Principles Integration | How should Openclaw insights integrate with the 5 invariant principles? |
+
+ADR 007 integrated Openclaw's insight on routine reasoning with Neural Organization's emergent reasoning vision, designing a 2-mode system that adapts based on Trust Score. ADR 008 defined the path hierarchy for state addressability while maintaining AI-friendly max-2-level depth. ADR 009 mapped the Phase 1-4 transformation to concrete feature milestones and transition criteria. ADR 010 clarified the boundary with Openclaw (1-2 domains vs 3+ domains) and quantified Neural Organization's depth through 4 moats. ADR 011 integrated Openclaw's state externalization into the 5 invariant principles, expanding Principle 5 to "Configuration and State as Data" and establishing a 3-tier principle hierarchy (Principle 5 as foundation, Principle 3 as cross-cutting constraint, Principles 1/2/4 as functional).
+
 ## Reading Guide
 
 - **First-time readers**: Skip this directory entirely. Start with `concept.md` and `design.md`.
@@ -51,6 +63,6 @@ ADR 005 reconciled v1.0's concrete operational designs with v2.0's principled ar
 
 ## Total Scope
 
-- 6 ADRs
-- ~892 lines
-- Estimated total read time: ~45 min
+- 11 ADRs (6 foundational + 5 implementation)
+- ~4,000 lines
+- Estimated total read time: ~3 hours

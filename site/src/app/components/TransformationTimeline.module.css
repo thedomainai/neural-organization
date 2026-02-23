@@ -1,0 +1,170 @@
+/* Transformation Timeline Styles */
+
+.container {
+  position: relative;
+  padding: var(--space-8) var(--space-5);
+  max-width: var(--container-xl);
+  margin: 0 auto;
+}
+
+.timeline {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-7);
+}
+
+.phaseCard {
+  position: relative;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  transition: all var(--duration-fast) var(--ease-default);
+}
+
+.phaseCard:hover {
+  border-color: var(--primary-500);
+  box-shadow: var(--glow-subtle);
+}
+
+.phaseHeader {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-4);
+  margin-bottom: var(--space-5);
+}
+
+.phaseNumber {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+  background: linear-gradient(135deg, var(--primary-500), var(--glow-400));
+  border-radius: var(--radius-md);
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--neutral-1000);
+}
+
+.phaseName {
+  margin: 0;
+}
+
+.phaseDuration {
+  color: var(--text-muted);
+  margin-top: var(--space-1);
+}
+
+.phaseDescription {
+  color: var(--text-secondary);
+  margin-bottom: var(--space-5);
+  line-height: 1.7;
+}
+
+.trustScore {
+  padding: var(--space-4);
+  background: rgba(80, 104, 164, 0.08);
+  border-radius: var(--radius-md);
+  border-left: 3px solid var(--glow-400);
+  margin-bottom: var(--space-5);
+}
+
+.features,
+.criteria {
+  margin-top: var(--space-5);
+}
+
+.featureList,
+.criteriaList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.featureList li,
+.criteriaList li {
+  padding-left: var(--space-5);
+  position: relative;
+  color: var(--text-secondary);
+}
+
+.featureList li::before {
+  content: '→';
+  position: absolute;
+  left: 0;
+  color: var(--primary-400);
+}
+
+.criteriaList li::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  color: var(--success-500);
+}
+
+.connector {
+  display: none;
+}
+
+/* Desktop: Horizontal Timeline */
+@media (min-width: 1024px) {
+  .timeline {
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-5);
+    position: relative;
+  }
+
+  /* Timeline connector line */
+  .timeline::before {
+    content: '';
+    position: absolute;
+    top: 32px;
+    left: 5%;
+    right: 5%;
+    height: 2px;
+    background: linear-gradient(
+      90deg,
+      var(--primary-500),
+      var(--glow-400),
+      var(--primary-500)
+    );
+    opacity: 0.3;
+    z-index: 0;
+  }
+
+  .phaseCard {
+    position: relative;
+    z-index: 1;
+  }
+
+  .phaseHeader {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .phaseNumber {
+    width: 56px;
+    height: 56px;
+    font-size: 28px;
+  }
+}
+
+/* Tablet: 2 columns */
+@media (min-width: 640px) and (max-width: 1023px) {
+  .timeline {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Reduce motion accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .phaseCard {
+    transition: none;
+  }
+}

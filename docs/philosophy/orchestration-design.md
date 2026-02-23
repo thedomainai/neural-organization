@@ -397,6 +397,36 @@ retry_strategy:
     reasoning: "外部サービスが完全にダウンしている可能性が高い"
 ```
 
+#### Graceful Degradation の原理（原理3）
+
+Orchestration のエラー回復は、不変原理「優雅な劣化」（[invariant-principles.md](../invariant-principles.md) 原理3）に基づいて設計される。
+
+**原理3 の形式的制約**:
+```
+For every capability c:
+  |resolve_chain(c)| >= 2
+  resolve_chain(c)[-1] = system_core_capability
+```
+
+この制約は以下を保証する：
+- すべてのケイパビリティは少なくとも2つの実行経路を持つ（primary + fallback）
+- フォールバックチェインの末尾は常にシステム自身の基本能力である
+- 任意の単一コンポーネントの除去は、システムを停止させず、品質の低下のみをもたらす
+
+**フォールバックチェインの設計原則**:
+
+1. **段階的な品質低下**: フォールバックは品質の段階的な低下を実現する。突然の機能停止ではなく、徐々に degraded mode に移行する
+
+2. **最終手段の保証**: チェインの最後は必ずシステム自身の基本能力（テンプレートベース、ルールベース、または人間へのエスカレーション）で終端する
+
+3. **コスト-品質のトレードオフ**: フォールバックは通常、コストの低下と品質の低下を同時にもたらす。これにより障害時のコスト爆発を防ぐ
+
+4. **独立した障害モード**: 各フォールバックリソースは独立した障害モードを持つべき。同じ依存関係（例: 同じAPIプロバイダー）を持つリソースをチェインに並べない
+
+**Layer 3 Capability Registry との統合**:
+
+Orchestration のフォールバック戦略は、Layer 3 の Capability Registry（[layer3-execution-design.md](layer3-execution-design.md) Capability Registry）の `resolve_chain` を参照する。Orchestration はこのチェインを実行時に解釈し、primary リソースの失敗時に自動的に次のリソースを試行する。
+
 #### フォールバック
 
 ```yaml
@@ -601,6 +631,313 @@ orchestration_metrics:
     - "low_queue: 35"
 ```
 
+## Evolution Engine — Orchestration の自己改善
+
+### 設計の必要性
+
+Orchestration のパラメータ（優先度の重み付け、リソース配分戦略、フロー制御パターン、フォールバックチェイン）は、初期設定時の仮説に基づいている。しかし、実際の運用を通じて、これらの仮説が最適でないことが判明する可能性が高い。
+
+Evolution Engine は、不変原理「設定のデータ化」（[invariant-principles.md](../invariant-principles.md) 原理5）の実装であり、Orchestration の設定を Execution Trace（[layer4-reflection-design.md](layer4-reflection-design.md) ステップ0）から自動的に改善する。
+
+### 進化サイクル
+
+```yaml
+evolution_cycle:
+  step_1_collect:
+    description: "実行トレースを蓄積"
+    minimum_data: "能力あたり最低 20 イベント"
+    sources:
+      - "execution_traces.jsonl"
+      - "orchestration_metrics"
+      - "human_feedback"
+
+  step_2_analyze:
+    description: "パターンとアノマリーを検出"
+    analyses:
+      - "能力別成功率"
+      - "リソース別レイテンシ"
+      - "コスト分析"
+      - "フォールバック頻度"
+      - "優先度重み付けの妥当性"
+
+  step_3_generate:
+    description: "改善提案を生成"
+    output: "evolution_proposal.yaml"
+    includes:
+      - "変更内容"
+      - "エビデンス"
+      - "期待される効果"
+      - "ロールバック手順"
+
+  step_4_review:
+    description: "人間が提案をレビュー"
+    options:
+      - "approve: 即座に適用"
+      - "reject: 却下"
+      - "modify: 修正して適用"
+    auto_apply: false  # 初期は人間承認必須
+
+  step_5_apply:
+    description: "設定を更新"
+    targets:
+      - "orchestration_config.yaml"
+      - "capability_registry.yaml (layer3)"
+    backup: "変更前の設定をバックアップ"
+
+  step_6_observe:
+    description: "変更の影響を監視"
+    duration: "次の 20 イベント"
+    auto_rollback_trigger: "成功率が変更前を 10% 以上下回った場合"
+```
+
+### 5つの分析シグナルパターン
+
+#### Signal 1: 不要な複雑性
+
+```yaml
+signal_1_unnecessary_complexity:
+  detection:
+    condition: "特定のフロー制御パターンが頻繁にスキップされる"
+    threshold: "80% の実行でスキップ"
+
+  example:
+    pattern: "Understanding の再構築"
+    skip_rate: 0.85
+    reasoning: "世界モデルが十分に新しい場合、再構築不要"
+
+  proposal:
+    action: "スキップ条件を緩和（1 hour → 4 hours）"
+    expected_impact:
+      resource_savings: "15% の計算リソース削減"
+      quality_risk: "low（世界モデルは 4 時間で大きく変化しない）"
+```
+
+#### Signal 2: リソース割り当ての不均衡
+
+```yaml
+signal_2_resource_imbalance:
+  detection:
+    condition: "特定のタスクが常にリソース不足で遅延"
+    threshold: "30% 以上のタスクが max_wait_time を超過"
+
+  example:
+    queue: "high_priority"
+    wait_time_exceeded_rate: 0.35
+    reason: "優先度計算で impact の重みが高すぎる"
+
+  proposal:
+    action: "優先度重み付けの調整"
+    change:
+      before: "impact: 0.35, urgency: 0.30"
+      after: "impact: 0.30, urgency: 0.35"
+    expected_impact:
+      wait_time_reduction: "20%"
+      quality_risk: "low"
+```
+
+#### Signal 3: フォールバック頻度の異常
+
+```yaml
+signal_3_fallback_anomaly:
+  detection:
+    condition: "primary resource の失敗率が高く、常に fallback が使われている"
+    threshold: "fallback 使用率 > 40%"
+
+  example:
+    capability: "code_generation"
+    primary: "code_generation_llm_specialized"
+    primary_failure_rate: 0.55
+    fallback: "general_purpose_llm"
+    fallback_success_rate: 0.85
+
+  proposal:
+    action: "resolve_chain の再順序付け"
+    change: "general_purpose_llm を primary に昇格"
+    expected_impact:
+      success_rate_improvement: "+15%"
+      cost_reduction: "$0.04 per invocation"
+```
+
+#### Signal 4: 新しいパターンの出現
+
+```yaml
+signal_4_emerging_pattern:
+  detection:
+    condition: "特定の種類のタスクが急増している"
+    threshold: "過去 30 日で 3 倍以上"
+
+  example:
+    task_type: "customer_churn_analysis"
+    volume_increase: "5 → 18 per day"
+    current_handling: "汎用的な data_analysis capability"
+
+  proposal:
+    action: "新しい専用 capability を作成"
+    new_capability: "churn_prediction"
+    rationale: "専用リソースで品質向上とコスト削減"
+    expected_impact:
+      quality_improvement: "+20%"
+      cost_reduction: "15%"
+```
+
+#### Signal 5: 優先度の逆転
+
+```yaml
+signal_5_priority_inversion:
+  detection:
+    condition: "低優先度タスクが高優先度タスクより良い結果を出している"
+    threshold: "成功率で 15% 以上の差"
+
+  example:
+    low_priority_task: "routine_weekly_report"
+    low_priority_success_rate: 0.95
+
+    high_priority_task: "strategic_decision_support"
+    high_priority_success_rate: 0.70
+
+  proposal:
+    action: "priority 計算の purpose_alignment 重みを引き上げ"
+    reasoning: "Purpose 整合性が実際の成功率に強く相関"
+    change:
+      before: "purpose_alignment: 0.25"
+      after: "purpose_alignment: 0.35"
+```
+
+### Evolution Proposal のフォーマット
+
+```yaml
+evolution_proposal:
+  id: "evo_20260222_001"
+  timestamp: "2026-02-22T15:30:00Z"
+  trigger: "signal_3_fallback_anomaly"
+
+  summary: |
+    code_generation の primary resource が高頻度で失敗。
+    fallback (general_purpose_llm) の方が成功率が高い。
+    resolve_chain を再順序付けして fallback を primary に昇格する。
+
+  evidence:
+    traces_analyzed: 47
+    period: "2026-02-01 to 2026-02-22"
+    metrics:
+      primary_failure_rate: 0.55
+      fallback_success_rate: 0.85
+      current_average_cost: 0.08
+      fallback_average_cost: 0.04
+
+  change:
+    file: "layer3/capability_registry.yaml"
+    capability: "code_generation"
+    action: "reorder_resolve_chain"
+
+    before:
+      resolve_chain:
+        - resource: "code_generation_llm_specialized"
+          confidence: 0.92
+        - resource: "general_purpose_llm"
+          confidence: 0.70
+
+    after:
+      resolve_chain:
+        - resource: "general_purpose_llm"
+          confidence: 0.85
+        - resource: "code_generation_llm_specialized"
+          confidence: 0.55
+
+  expected_impact:
+    success_rate: "+15% (0.70 → 0.85)"
+    cost_per_invocation: "-50% ($0.08 → $0.04)"
+    latency: "-38% (4500ms → 2800ms)"
+    quality_risk: "low（fallback の実績が証明済み）"
+
+  rollback:
+    instruction: "resolve_chain を元の順序に戻す"
+    auto_rollback_trigger: "success_rate < 0.75 in next 20 traces"
+
+  approval:
+    status: "pending"
+    reviewer: null
+    reviewed_at: null
+```
+
+### Trust Gradient — 段階的自律化
+
+Evolution Engine の自律性は、実績に応じて段階的に上昇する。
+
+| Level | 名称 | Trigger | 自律範囲 |
+|-------|------|---------|---------|
+| **Level 0: Manual** | 手動承認のみ | 初期展開 | すべての提案に人間の承認が必要 |
+| **Level 1: Suggest** | 提案のみ | 5 提案が承認され、rollback 0 件 | confidence スコアの微調整（±5%）は自動適用。構造変化は承認必要 |
+| **Level 2: Semi-Auto** | 半自動 | 20 提案が承認され、rollback < 10% | resolve_chain の再順序付けは自動適用。新 capability 作成は承認必要 |
+| **Level 3: Autonomous** | 自律 | 50 提案が承認され、rollback < 5% | すべての提案を自動適用。人間には通知のみ。auto_rollback は常に有効 |
+
+**不変**: すべてのレベルで auto_rollback は有効。パフォーマンス低下を検出したら自動復元。
+
+### Evolution Engine と Governance Trust Score の統合
+
+Evolution Engine 自身も Governance の Trust Score モデルに従う。
+
+```yaml
+evolution_engine_trust_score:
+  factors:
+    proposal_acceptance_rate:
+      weight: 0.30
+      current: 0.90  # 提案の 90% が人間に承認されている
+
+    rollback_rate:
+      weight: 0.25
+      current: 0.05  # ロールバックは 5% のみ
+
+    impact_accuracy:
+      weight: 0.30
+      current: 0.85  # 期待される効果の 85% が実現
+
+    risk_management:
+      weight: 0.15
+      current: 0.95  # リスクのある変更を適切に検出
+
+  trust_score: 0.88  # Level 2 (Semi-Auto) に相当
+
+  next_level_requirement:
+    level_3_threshold: 0.90
+    gap: 0.02
+    estimated_time: "10-15 proposals"
+```
+
+### Evolution Engine のモニタリング
+
+```yaml
+evolution_monitoring:
+  active_proposals:
+    pending_review: 2
+    auto_applied: 15
+    rejected: 1
+
+  recent_changes:
+    - proposal_id: "evo_20260220_003"
+      status: "applied"
+      impact:
+        success_rate: "+12% (expected: +10%)"
+        cost: "-20% (expected: -15%)"
+      evaluation: "positive"
+
+    - proposal_id: "evo_20260218_001"
+      status: "rolled_back"
+      reason: "success_rate dropped to 0.65 (threshold: 0.70)"
+      action: "reverted to original config"
+
+  performance_trends:
+    overall_success_rate:
+      before_evolution: 0.82
+      after_evolution: 0.89
+      improvement: "+8.5%"
+
+    average_cost_per_task:
+      before: "$0.15"
+      after: "$0.11"
+      savings: "27%"
+```
+
 ## まとめ
 
 Orchestration は Neural Organization の「神経系の統率者」である。
@@ -611,5 +948,6 @@ Orchestration は Neural Organization の「神経系の統率者」である。
 3. **優先度管理**: 緊急度・影響度・Purpose 整合性に基づく優先順位
 4. **自律的エラー回復**: リトライ・フォールバック・エスカレーション
 5. **パフォーマンス最適化**: キャッシング・並列化・プリエンプティブ実行
+6. **自己改善（Evolution Engine）**: 実行トレースから設定を継続的に最適化
 
-この Orchestration により、5 つのレイヤーは効率的に協調し、組織の知性が円滑に機能する。
+Evolution Engine により、Orchestration は時間とともに賢くなり、より効率的で正確な調整を実現する。これは Layer 4 Reflection の「学習」が Orchestration 自身に適用された形である。
