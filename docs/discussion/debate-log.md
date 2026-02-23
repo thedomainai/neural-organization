@@ -350,14 +350,14 @@ v1.0では人間のフィードバックを記憶に保存するだけ。
 8. **双方向Interface Layer** による外部世界との接続
 
 これらは次のドキュメント群で詳細に定義される：
-- `architecture/00-overview.md` — アーキテクチャ全体像
-- `architecture/01-seven-layers.md` — 7層モデル詳細
-- `architecture/02-agent-taxonomy.md` — エージェント分類体系
-- `architecture/03-memory-architecture.md` — 記憶アーキテクチャ
-- `architecture/04-communication.md` — 通信プロトコル
-- `architecture/05-governance.md` — ガバナンスフレームワーク
-- `architecture/06-learning.md` — 学習メカニズム
-- `architecture/07-resilience.md` — 障害耐性設計
+- `architecture-archive/00-overview.md` — アーキテクチャ全体像 `[ARCHIVED: 旧7層]`
+- `architecture-archive/01-seven-layers.md` — 7層モデル詳細 `[ARCHIVED: 旧7層]`
+- `architecture-archive/02-agent-taxonomy.md` — エージェント分類体系 `[ARCHIVED: 旧7層]`
+- `architecture-archive/03-memory-architecture.md` — 記憶アーキテクチャ `[ARCHIVED: 旧7層]`
+- `architecture-archive/04-communication.md` — 通信プロトコル `[ARCHIVED: 旧7層]`
+- `architecture-archive/05-governance.md` — ガバナンスフレームワーク `[ARCHIVED: 旧7層]`
+- `architecture-archive/06-learning.md` — 学習メカニズム `[ARCHIVED: 旧7層]`
+- `architecture-archive/07-resilience.md` — 障害耐性設計 `[ARCHIVED: 旧7層]`
 - `modules/` — 各モジュール定義
 - `enterprise-functions/` — 企業機能別マッピング
 
