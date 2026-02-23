@@ -1,6 +1,6 @@
 # Neural Organization — 設計編
 
-> 本ドキュメントは Neural Organization の各レイヤーと横断的要素の詳細設計（具体例・定量モデル・技術的実装方針・インタラクションパターン）を定義する。概念・思想・戦略については [concept.md](concept.md) を参照。各要素のさらに詳細な設計思想は [philosophy/](philosophy/) を参照。
+> 本ドキュメントは Neural Organization の各レイヤーと横断的要素の詳細設計（**HOW**: 具体例・定量モデル・技術的実装方針・インタラクションパターン）を定義する。5層+4横断の構造定義は [framework.md](framework.md) を、思想・ビジョンは [concept.md](concept.md) を、各要素のさらに詳細な設計思想は [philosophy/](philosophy/) を参照。
 
 ## 1. レイヤー別詳細設計
 
