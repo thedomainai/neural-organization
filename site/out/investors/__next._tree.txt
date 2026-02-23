@@ -1,4 +1,0 @@
-:HL["/neural-organization/_next/static/chunks/0bf950d7b244674c.css","style"]
-:HL["/neural-organization/_next/static/chunks/6c12f4fed60dda9a.css","style"]
-:HL["https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500&display=swap","style"]
-0:{"buildId":"kMK2-vx8j4Ir1ZZ5CuGv6","tree":{"name":"","paramType":null,"paramKey":"","hasRuntimePrefetch":false,"slots":{"children":{"name":"investors","paramType":null,"paramKey":"investors","hasRuntimePrefetch":false,"slots":{"children":{"name":"__PAGE__","paramType":null,"paramKey":"__PAGE__","hasRuntimePrefetch":false,"slots":null,"isRootLayout":false}},"isRootLayout":false}},"isRootLayout":true},"staleTime":300}
