@@ -842,6 +842,85 @@ learning_from_human_modifications:
     "次回の顧客コミュニケーションから、このパターンを適用"
 ```
 
+### 品質保証の実装パターン: 否定的定義と多段編集
+
+> 本セクションは、Personal Brain OS（Muratcan Koylan 氏）の Voice System / Anti-patterns 設計から、Layer 3 の品質保証に反映すべき実践知見を整理したものである。参照元: `inbox/file-system.md`
+
+#### 否定的定義（Anti-patterns）による品質制御
+
+**知見**: 「何であるか」を定義するよりも「何でないか」を定義する方が、エージェントの出力品質を効果的に制御できる。
+
+従来の品質基準は「トーンは professional but approachable」のような肯定的定義が多いが、これはエージェントにとって曖昧である。代わりに、**禁止パターンリスト**を用いることで、品質のガードレールを具体的に設定できる。
+
+```yaml
+anti_pattern_quality_control:
+  # 組織のコミュニケーションにおける禁止パターンの例
+  banned_expressions:
+    tier_1_absolute_ban:
+      - "弊社は業界をリードする..."
+      - "お客様のご理解とご協力をお願い..."
+      # 組織固有の禁止表現を蓄積
+    tier_2_context_dependent:
+      - pattern: "検討させていただきます"
+        exception: "法的に回答を留保すべき場合"
+    tier_3_overuse_warning:
+      - pattern: "〜させていただく"
+        limit: "1文書あたり2回まで"
+
+  structural_traps:
+    - "すべての段落を同じ長さにする"
+    - "箇条書きの項目が常に3つ"
+    - "結論が導入の繰り返し"
+
+  check_process:
+    - "生成後にanti-patternsリストと照合"
+    - "トリガーがあれば該当箇所を書き直し"
+    - "品質基準の肯定的定義と併用"
+```
+
+**Neural Organization での適用**:
+- 各組織の長期記憶に、人間の修正から抽出された禁止パターンを蓄積する
+- Layer 3 の品質チェック `stage_3_rule_based_validation` に禁止パターン照合を組み込む
+- 禁止パターンは Reflection（Layer 4）から継続的に更新される
+
+#### 定量的なスタイルプロファイル
+
+**知見**: 声やトーンを形容詞ではなく、**数値スケール**で定義すると、エージェントに正確な着地点を伝えられる。
+
+```yaml
+# 組織のコミュニケーションスタイルプロファイルの例
+style_profile:
+  formal_casual: 6        # 1=非常にフォーマル, 10=非常にカジュアル
+  serious_playful: 3      # 1=非常に真面目, 10=非常に遊び心
+  technical_simple: 7     # 1=非常に専門的, 10=非常に平易
+  reserved_expressive: 5  # 1=非常に抑制的, 10=非常に表現的
+  cautious_bold: 6        # 1=非常に慎重, 10=非常に大胆
+```
+
+これは Long-term Memory に「組織の『らしさ』」として保存され、Layer 3 がアーティファクト生成時に参照する。
+
+#### 多段編集プロセス
+
+**知見**: 1回の生成 + 1回のチェックではなく、**目的の異なる複数の編集パス**を順次実行することで品質が大幅に向上する。
+
+```yaml
+multi_pass_editing:
+  pass_1_structure:
+    focus: "構造と論理の流れ"
+    check: "導入は注意を引くか？論理は飛躍していないか？"
+  pass_2_style:
+    focus: "トーンとブランド整合性"
+    check: "禁止パターンスキャン、スタイルプロファイルとの一致"
+  pass_3_evidence:
+    focus: "事実の正確性"
+    check: "主張に根拠があるか？数値は正確か？出典は明示されているか？"
+  pass_4_delivery:
+    focus: "受け手の視点"
+    check: "受け手にとって分かりやすいか？行動を促すか？"
+```
+
+これは既存の品質チェック4段階（基準適合→論理整合性→安全性→最適化）と補完関係にある。4段階チェックは合否判定（Gate）であり、多段編集は生成品質の向上（Improvement）である。
+
 ### 4. デリバリー
 
 **適切な受信者に、適切なタイミングで、適切なチャネルで届ける**
