@@ -10,23 +10,25 @@ These ADRs serve as the institutional memory of *why* the architecture looks the
 
 The 10 ADRs trace a coherent evolution from initial product concept to the current architecture:
 
-### Phase 1: Concept Formation (ADR 001-002)
+### Phase 1: Concept Formation (ADR 001-002) `[ARCHIVED]`
 
 | ADR | Title | Key Question |
 |---|---|---|
-| [001](001-product-concept-design.md) | Product Concept Design | How should the product architecture, features, and go-to-market be structured? |
-| [002](002-agi-era-concept-reconstruction.md) | AGI-Era Concept Reconstruction | Starting from zero bias, what should Neural Organization be in the AGI era? |
+| [archive/001](archive/001-product-concept-design.md) | Product Concept Design | How should the product architecture, features, and go-to-market be structured? |
+| [archive/002](archive/002-agi-era-concept-reconstruction.md) | AGI-Era Concept Reconstruction | Starting from zero bias, what should Neural Organization be in the AGI era? |
 
 ADR 001 established the initial product concept. ADR 002 challenged every assumption by asking "what if we start from AGI-era first principles?" -- leading to the paradigm shift from "AI tools for organizations" to "the next form of organization itself."
 
-### Phase 2: Architecture Design (ADR 003-004)
+### Phase 2: Architecture Design (ADR 003-004) `[ARCHIVED]`
 
 | ADR | Title | Key Question |
 |---|---|---|
-| [003](003-seven-layer-intelligence-architecture.md) | 7-Layer Intelligence Architecture `[ARCHIVED]` | How should the data-to-output transformation pipeline be designed? |
-| [004](004-five-layer-consolidation.md) | 5-Layer Consolidation `[ARCHIVED]` | Can the 7 layers be consolidated without losing expressiveness? |
+| [archive/003](archive/003-seven-layer-intelligence-architecture.md) | 7-Layer Intelligence Architecture `[ARCHIVED]` | How should the data-to-output transformation pipeline be designed? |
+| [archive/004](archive/004-five-layer-consolidation.md) | 5-Layer Consolidation `[ARCHIVED]` | Can the 7 layers be consolidated without losing expressiveness? |
 
 ADR 003 designed a 7-layer pipeline. ADR 004 identified redundancies (Integration/Perception, Reasoning/Composition) and consolidated into the current **5 layers + 4 crosscutting elements** architecture.
+
+> **Note**: ADR 001-004 は現行設計に統合済みのため `archive/` に移動。歴史的参照用。
 
 ### Phase 3: Design Maturation (ADR 005-006)
 
