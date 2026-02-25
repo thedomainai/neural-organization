@@ -7,7 +7,7 @@ const withBundleAnalyzer = bundleAnalyzer({
 
 const nextConfig: NextConfig = {
   output: "export",
-  basePath: "/neural-organization",
+  basePath: process.env.NODE_ENV === "development" ? "" : "/neural-organization",
   images: {
     unoptimized: true,
   },
