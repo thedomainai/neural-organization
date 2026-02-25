@@ -10,7 +10,9 @@
 
 AGI は高度な知能を持つが、**意志を持たない**。知能は「手段」であり、意志は「目的」である。
 
-従来の AI システムは「何をすべきか」を人間が逐一指示する。Neural Organization は「なぜ存在するか」という根源的な目的を注入されることで、自律的に「何をすべきか」を導出する。
+従来の AI システムは「何をすべきか」を人間が逐一指示する。Neural Organization は「なぜ存在するか」という根源的な目的を注入されることで、自律的に「何をすべきか」を導出する。この転換は、Marquet (2013) が米海軍原子力潜水艦で実証した Intent-Based Leadership — 命令から意図伝達への転換 — と構造的に同じである。命令（Instruction）ではなく意図（Intent）を共有することで、末端の実行者が状況に応じた判断を自律的に行えるようになる。
+
+Parasuraman, Sheridan & Wickens (2000) の自動化レベルモデルでは、人間の関与を 10 段階で整理している。Purpose の注入は、このモデルにおけるレベル 8-9（システムが自律的に行動し、人間には通知のみ）に相当する高レベル自動化を可能にする前提条件である。Purpose がなければ、自律的な行動の方向性が定まらず、高レベル自動化は成立しない。
 
 **Purpose と Instruction の違い**:
 
@@ -35,7 +37,7 @@ Purpose は**意志**であり、Instruction は**指示**である。Neural Org
 
 **原理 3: Purpose は制約を含む**
 
-「何を実現するか」だけでなく、「何を許容しないか」も定義する。予算上限、法的制約、倫理的境界が Purpose の一部である。
+「何を実現するか」だけでなく、「何を許容しないか」も定義する。予算上限、法的制約、倫理的境界が Purpose の一部である。Ostrom (1990) は共有資源の統治研究において、明確な境界条件と制約ルールの定義が持続可能な協調の前提条件であることを実証した。Purpose の Boundary は、この立憲的統治の原理を組織知能に適用したものである。
 
 **原理 4: Purpose は人間の専有物である**
 
@@ -47,7 +49,7 @@ Purpose は固定ではなく、組織の成長・市場の変化・学習に応
 
 ## Purpose の構成要素
 
-Purpose は 4 つの要素で構成される：
+Purpose は 4 つの要素で構成される。この 4 要素構造は、Marquet (2013) の Intent-Based Leadership における「意図の完全な伝達」の要件 — 目的（Why）、目標状態（Where）、判断基準（How）、制約（Boundary） — と対応する。Parasuraman et al. (2000) の自動化レベルモデルにおいても、高レベル自動化が適切に機能するためには、人間側が目的・方向性・制約を明確に定義することが前提とされている：
 
 ### 1. Why（存在目的）
 
@@ -423,7 +425,7 @@ Purpose の重み付け:
 
 #### Intent-Based Routing — Purpose から Execution への接続
 
-Purpose（人間の意志）がどのように具体的な実行リソースに変換されるかは、3段階のルーティングプロセスを経る。これは不変原理「能力による間接参照」（[invariant-principles.md](../invariant-principles.md) 原理1）と不変量 I6「分類と解決の分離」の実装である。
+Purpose（人間の意志）がどのように具体的な実行リソースに変換されるかは、3段階のルーティングプロセスを経る。これは不変原理「能力による間接参照」（[invariant-principles.md](../invariant-principles.md) 原理1）と不変量 I6「分類と解決の分離」の実装である。Marquet (2013) の Intent-Based Leadership では、指揮官が「何を達成したいか」を伝え、乗組員が「どう達成するか」を自律的に判断する。このルーティングは同じ構造を形式化したものである。
 
 **ルーティングの3段階**:
 
@@ -649,3 +651,29 @@ Purpose は Neural Organization の「魂」である。
 5. **全レイヤーに作用**: 特に Reasoning において中核的な役割
 
 この Purpose と Understanding（世界モデル）が組み合わさることで、Layer 2 (Reasoning) における「何をすべきか」の導出が可能になる。
+
+## 学術的根拠
+
+Purpose の設計は、以下の学術的知見に基づいている。
+
+### Intent-Based Leadership
+
+Marquet, D. (2013). *Turn the Ship Around!*
+
+米海軍原子力潜水艦 USS Santa Fe での実践に基づく。命令（Command）から意図（Intent）への転換により、乗組員が自律的に判断できる組織に変革した事例である。Purpose の 4 要素（Why/Where/How/Boundary）は、Marquet が示した「意図の完全な伝達」に必要な要件 — 目的、目標状態、判断基準、制約 — と構造的に対応する。Intent-Based Routing は、この意図伝達の形式的実装である。
+
+### 自動化レベルモデル
+
+Parasuraman, R., Sheridan, T.B. & Wickens, C.D. (2000). "A Model for Types and Levels of Human Interaction with Automation." *IEEE Trans. SMC*, 30(3), 286-297.
+
+人間と自動化の関与を 10 段階で整理したモデルである。Neural Organization が目指す高レベル自動化（レベル 8-9: システムが自律的に行動し人間には通知のみ）は、Purpose という明確な目的定義があってはじめて成立する。Purpose なしの高レベル自動化は、方向性のない自律であり、危険である。
+
+### 立憲的統治
+
+Ostrom, E. (1990). *Governing the Commons.* Cambridge University Press.
+
+共有資源（コモンズ）の持続可能な管理には、明確な境界条件・制約ルール・違反への制裁・紛争解決メカニズムが必要であることを実証した。Purpose の Boundary（制約・境界）は、Ostrom が示した「立憲的レベルのルール設定」に相当する。組織知能という共有資源を統治するための根本的な制約条件である。
+
+### 設計への示唆
+
+これらの知見は、Purpose の設計が単なる設計判断ではなく、組織論・Human-AI Teaming・統治理論において独立に再発見されてきた原理に基づくことを示している。ただし、学術的知見はあくまで「着想の根拠」であり、Neural Organization における Purpose の具体的な 4 要素構造や YAML 表現形式は設計判断である。

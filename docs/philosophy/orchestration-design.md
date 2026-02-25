@@ -39,6 +39,14 @@
 
 エラーは不可避である。Orchestration はリトライ・フォールバック・エスカレーションを自律的に実行する。
 
+### 学術的基盤
+
+Orchestration の設計は、サイバネティクス・複雑系科学・レジリエンスエンジニアリングの原理に基づいている。
+
+**サイバネティクスとフィードバック制御**: Wiener (1948) のサイバネティクスは、フィードバックによるシステム制御の基本理論を確立した。Orchestration のフロー制御 — 層間のループバック、品質チェックによる再実行、動的な優先度調整 — はサイバネティクスの直接的な実装である。システムの出力を観測し、目標との差分に基づいて入力を調整するフィードバックループが、Orchestration の 4 つの機能すべてに埋め込まれている。
+
+**必要多様性の法則**: Ashby (1956) の「必要多様性の法則」は、「多様性のみが多様性を吸収しうる」と述べる。組織が直面する状況の多様性（顧客の多様なニーズ、予測不能な障害、変動するリソース）に対処するには、Orchestration 自身が十分な多様性（複数のフロー制御パターン、フォールバック戦略、動的リソース配分）を持つ必要がある。原理 2（動的フロー構成）と原理 3（最適リソース配分）は、この法則の実装である。
+
 ## Orchestration の 4 つの機能
 
 ### 1. フロー制御
@@ -639,6 +647,18 @@ Orchestration のパラメータ（優先度の重み付け、リソース配分
 
 Evolution Engine は、不変原理「設定のデータ化」（[invariant-principles.md](../invariant-principles.md) 原理5）の実装であり、Orchestration の設定を Execution Trace（[layer4-reflection-design.md](layer4-reflection-design.md) ステップ0）から自動的に改善する。
 
+### 学術的基盤
+
+Evolution Engine は、複数の学術的系譜が交差する設計である。
+
+**PDCA/PDSA サイクル**: Deming の継続的改善サイクル（Plan-Do-Check/Study-Act）は、Evolution Engine の進化サイクル（Collect → Analyze → Generate → Review → Apply → Observe）と構造的に対応する。Evolution Engine はこのサイクルをデータ駆動で自動化したものである。
+
+**レジリエンスの 4 つの礎石**: Hollnagel (2011) はレジリエントなシステムの能力を 4 つに分類した — Respond（応答する）、Monitor（監視する）、Anticipate（予見する）、Learn（学習する）。Evolution Engine は特に Learn の実装であり、過去の実行トレースからパターンを抽出し、将来の設定を改善する。Orchestration 全体で見ると、フロー制御が Respond、メトリクス監視が Monitor、プリエンプティブ実行が Anticipate、Evolution Engine が Learn に対応する。
+
+**複雑適応系**: Holland (1995) は複雑適応系の特性として、ビルディングブロック（再利用可能な基本要素の組み合わせ）、適応（環境からのフィードバックによるルール変更）、内部モデル（環境の予測モデル）を挙げた。Evolution Engine はこれらすべてを実装する — Capability Registry のリソースがビルディングブロック、進化サイクルによるパラメータ調整が適応、5 つの分析シグナルパターンが内部モデルに相当する。
+
+**秩序の縁**: Kauffman (1993) は、最適な適応は秩序とカオスの境界（edge of chaos）で生じることを示した。Evolution Engine の Trust Gradient（段階的自律化）は、完全な人間制御（秩序）と完全な自律（カオス）の間で動的に均衡点を探索する設計であり、秩序の縁における適応の実装と見なせる。
+
 ### 進化サイクル
 
 ```yaml
@@ -951,3 +971,24 @@ Orchestration は Neural Organization の「神経系の統率者」である。
 6. **自己改善（Evolution Engine）**: 実行トレースから設定を継続的に最適化
 
 Evolution Engine により、Orchestration は時間とともに賢くなり、より効率的で正確な調整を実現する。これは Layer 4 Reflection の「学習」が Orchestration 自身に適用された形である。
+
+## 学術的根拠
+
+Orchestration の設計は、サイバネティクス・複雑系科学・レジリエンスエンジニアリングの知見に基づいている。
+
+| 設計要素 | 学術的根拠 | 対応関係 |
+|---|---|---|
+| フロー制御（ループバック、動的調整） | Wiener (1948) サイバネティクス — フィードバックによるシステム制御 | 出力を観測し目標との差分で入力を調整する制御構造 |
+| 多様なフロー制御・フォールバック戦略 | Ashby (1956) 必要多様性の法則 — 多様性のみが多様性を吸収する | 環境の多様性に対処するための制御の多様性 |
+| Evolution Engine の進化サイクル | Deming PDCA/PDSA — 継続的改善サイクル | Collect → Analyze → Generate → Apply → Observe のデータ駆動的自動化 |
+| Orchestration 全体の 4 能力 | Hollnagel (2011) レジリエンスの 4 つの礎石 | フロー制御=Respond、メトリクス=Monitor、プリエンプティブ実行=Anticipate、Evolution Engine=Learn |
+| Evolution Engine の適応メカニズム | Holland (1995) 複雑適応系 — ビルディングブロック、適応、内部モデル | Capability Registry=ビルディングブロック、パラメータ調整=適応、分析シグナル=内部モデル |
+| Trust Gradient（段階的自律化） | Kauffman (1993) 秩序の縁 — 最適な適応は秩序とカオスの境界で生じる | 人間制御と完全自律の間の動的均衡 |
+
+**参考文献**:
+- Wiener, N. (1948). *Cybernetics.* MIT Press.
+- Ashby, W.R. (1956). *An Introduction to Cybernetics.* Chapman and Hall.
+- Deming, W.E. (1986). *Out of the Crisis.* MIT Press.
+- Hollnagel, E. (2011). "Epilogue: RAG — The Resilience Analysis Grid." In E. Hollnagel et al. (Eds.), *Resilience Engineering in Practice.* Ashgate.
+- Holland, J.H. (1995). *Hidden Order.* Addison-Wesley.
+- Kauffman, S.A. (1993). *The Origins of Order.* Oxford University Press.

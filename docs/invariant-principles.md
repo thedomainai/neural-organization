@@ -247,9 +247,101 @@ Neural Organization には複数のレベルの「原理」が存在する。そ
 1. **agent-orchestration プロジェクト**: マルチエージェントシステムのオーケストレーション設計の分析から導出された5つの公理（Axiom 1-5）
 2. **Neural Organization プロジェクト**: AGI時代の組織設計の第一原理からの構築
 
-両プロジェクトが異なる出発点（コードレベルのエージェント協調 vs 組織レベルの知能設計）から、独立に同一の原理に到達したことは、これらの原理が特定のドメインを超えた普遍性を持つことの証左である。
+両プロジェクトが異なる出発点（コードレベルのエージェント協調 vs 組織レベルの知能設計）から、共通の問題構造（分散する情報処理エージェントの協調）がスケール横断的に同じ設計パターンを要求することを示している。von Bertalanffy (1968) の一般システム理論が示す通り、異なる分野でアイソモルフィックな法則が現れることは単なるアナロジーを超えた構造的必然性である。
 
 詳細な分析と統合プロセスについては、[decisions/006-agent-orchestration-insights-integration.md](decisions/006-agent-orchestration-insights-integration.md)（予定）を参照。
+
+### 4.1 学術的検証
+
+以下に、各不変原理の学術的根拠を詳述する。学術的検証の全体像は [references/academic-validation.md](../references/academic-validation.md) を参照。
+
+#### 原理1: 能力による間接参照（Capability Indirection）
+
+能力要件による間接参照は、分散システムの協調問題に対する普遍的な解法として繰り返し再発見されてきた。
+
+- **Smith (1980) Contract Net Protocol**: マルチエージェント環境における最初の体系的な能力ベース委譲プロトコル。タスクを「誰がやるか」ではなく「何ができるか」で仲介する設計を確立した。
+- **SOA サービスディスカバリ**: サービス指向アーキテクチャにおいて、サービスの実装ではなくインタフェース（能力契約）に依存する設計パターンとして同じ原理が実装されている。
+- **MasRouter (2025)**: 最新のマルチエージェントシステム研究でも、エージェントの能力プロファイルに基づく動的ルーティングが有効であることが示されている。
+- **Ashby (1956) 必要多様性の法則**: 制御系の多様性は被制御系の多様性に対応しなければならない。能力要件の多様性に対して実行リソースの多様性を動的にマッチングする間接参照は、この法則の直接的な実装である。
+
+#### 原理2: 計測なきシステムは収束しない（Observability Primacy）
+
+フィードバックループの不可欠性は、サイバネティクスから認知科学まで、独立した複数のドメインで確認されている。
+
+- **Wiener (1948) サイバネティクス**: フィードバック制御の数学的基盤。目標状態と現在状態の差分を計測し、その差分に基づいて行動を修正するループが、あらゆる適応システムの前提条件であることを定式化した。
+- **Deming PDCA サイクル**: 品質管理における計画・実行・検証・改善のサイクル。計測（Check）なしに改善（Act）は起きないという産業界での実証。
+- **Hollnagel et al. (2006) レジリエンスエンジニアリングの4つの礎石**: 監視（monitoring）・応答（responding）・学習（learning）・予見（anticipating）。これらすべてが計測データを前提とする。
+- **Flavell (1979) メタ認知**: 自己の認知プロセスを認識し調整する能力。「自分が何を知り、何を知らないか」の計測がなければ、認知戦略の改善は起きない。Neural Organization の Layer 4 Reflection はシステムレベルのメタ認知として機能する。
+- **Argyris (1977) ダブルループ学習**: 行動の結果だけでなく、行動の前提を問い直す学習。計測データが前提の検証を可能にする。
+
+#### 原理3: 優雅な劣化（Graceful Degradation）
+
+システムの部分的障害に対する耐性は、レジリエンスエンジニアリングと複雑系理論で広範に研究されている。
+
+- **Woods (2015, 2018) graceful extensibility**: Woods は resilience を「驚き（surprise）に対処し続ける能力」と再定義し、graceful extensibility（優雅な拡張性）の概念を提唱した。これは単なる劣化の抑制ではなく、予期しない状況に対して能力を拡張し続ける適応能力を指す。Neural Organization の原理3はこの概念と直接的に対応する。
+- **Carlson & Doyle (2002) HOT（Highly Optimized Tolerance）理論**: 複雑系における robustness は常にトレードオフを伴う。ある方向のロバスト性を最適化すると、別方向の脆弱性が必然的に生じる（robust-yet-fragile）。この理論は、優雅な劣化が「万能の耐障害性」ではなく「設計者が選択した障害モードへの最適化」であることを示している。
+- **レジリエンスエンジニアリング（Hollnagel et al., 2006）**: 安全は「事故がない状態」ではなく「変動する条件に適応し続ける能力」として再定義された。この視座は Neural Organization の原理3が静的な冗長性ではなく動的な適応能力を要求する根拠を提供する。
+
+#### 原理4: コンテキストは有限資源（Context as Currency）
+
+人間の認知資源の有限性は、心理学で最も堅固に実証された知見の一つである。
+
+- **Simon (1955) 限定合理性**: 人間は完全に合理的な判断を下せない。認知資源の有限性が意思決定を制約するという前提は、組織設計の根幹を規定する。Neural Organization の Governance 設計（人間の注意を最も価値の高い判断に集中させる二重フィルタリング）は、限定合理性への直接的な対処である。
+- **Miller (1956) 7±2 則**: 短期記憶の容量制約。人間が同時に処理できる情報チャンクの上限を実証した古典的研究。
+- **Cowan (2001) 4チャンク**: Miller の 7±2 を再検証し、注意の焦点に保持できるチャンク数はおよそ4であることを示した。より厳しい制約の下でのコンテキスト設計が必要であることを示唆する。
+- **Sweller (1988) 認知負荷理論**: 学習・問題解決における作業記憶への負荷を3種（内在的・外在的・本質的）に分類し、外在的認知負荷の削減が課題遂行を改善することを実証した。Neural Organization の Progressive Disclosure パターンは、外在的認知負荷を段階的に制御する設計として理解できる。
+
+#### 原理5: 構成と状態のデータ化（Configuration and State as Data）
+
+システムの構成と状態を明示的なデータとして外部化する設計パターンは、ソフトウェア工学と生物学の両方で観察される。
+
+- **Event Sourcing**: システムの状態をイベントの列として永続化する設計パターン。状態の変更履歴が完全に再現可能であり、任意の時点への巻き戻しと分析を可能にする。
+- **GitOps**: インフラストラクチャの構成をデータ（宣言的定義ファイル）として管理し、バージョン管理システムを single source of truth とする運用パターン。構成のデータ化がもたらす監査可能性・再現性・自動化のメリットを実証している。
+- **Maturana & Varela (1980) オートポイエーシス**: 生物システムは自己の構成要素を自ら産出する。Neural Organization の Evolution Engine は、システムがその構成（ルーティングルール、優先度重み等）を自ら読み書き・更新するという意味で、オートポイエーシス的な性質を持つ。
+
+### 4.2 注意すべき限界
+
+学術的根拠は設計への着想と理論的正当化を提供するが、以下の限界を認識する必要がある。
+
+**「不変原理」（invariant）という表現の強さ**: 「invariant」は数学・物理学で使われる非常に強い主張である。本ドキュメントの5つの原理は、認知科学・組織論・複雑系理論から繰り返し再発見されるロバストな設計原理（recurrently rediscovered design principles）であり、その意味で高い普遍性を持つ。ただし、すべての可能なシステム設計に必然的に適用されるかどうかは、経験的に開かれた問いである。
+
+**HOT理論が示すトレードオフ**: Carlson & Doyle (2002) の HOT 理論が示す通り、ロバスト性の最適化は常にトレードオフを伴う。5つの原理をすべて同時に最大化できる保証はなく、実装においては原理間の優先度判断が必要になる場面がある。例えば、原理2（計測の網羅性）と原理4（コンテキストの有限性）は、計測データの量と人間の注意予算の間で緊張関係を生じうる。
+
+**原理5の位置づけ**: 構成と状態のデータ化は有用な設計パターンであるが、他の4つの原理と比べると「不変原理」としての強度はやや弱い。すべてのシステムに必須とは限らず（小規模なシステムではハードコードで十分な場合もある）、むしろ「自己改善するシステム」の前提条件として理解すべきである。
+
+**「独立に同じ原理に到達した」という主張の精度**: agent-orchestration プロジェクトと Neural Organization プロジェクトは異なるスケールを対象としているが、どちらも「分散する情報処理エージェントの協調」という共通の問題構造を扱っている。「独立な収斂」よりも「共通の問題構造がスケール横断的に同じ設計パターンを要求する」がより正確な記述である。Csete & Doyle (2002) が示した生物学と工学の収斂も、同様の問題構造（複雑性の管理）が背後にあると解釈できる。
+
+**メタファーと実装の距離**: 認知科学の概念はメタファーとして活用されているが、「脳がこうだから組織もこうあるべき」は論理的に必然ではない。設計への「着想」（inspired by）と科学的「証明」（proven by）の区別が重要である。
+
+### 4.3 主要参考文献
+
+**サイバネティクス・システム理論**:
+- Wiener, N. (1948). *Cybernetics.* MIT Press.
+- Ashby, W.R. (1956). *An Introduction to Cybernetics.* Chapman and Hall.
+- von Bertalanffy, L. (1968). *General System Theory.* George Braziller.
+- Maturana, H. & Varela, F. (1980). *Autopoiesis and Cognition.* D. Reidel.
+
+**認知科学・心理学**:
+- Simon, H.A. (1955). "A Behavioral Model of Rational Choice." *QJE*, 69(1), 99-118.
+- Miller, G.A. (1956). "The Magical Number Seven, Plus or Minus Two." *Psychological Review*, 63, 81-97.
+- Flavell, J.H. (1979). "Metacognition and Cognitive Monitoring." *American Psychologist*, 34(10), 906-911.
+- Sweller, J. (1988). "Cognitive Load during Problem Solving." *Cognitive Science*, 12, 257-285.
+- Cowan, N. (2001). "The magical number 4 in short-term memory." *BBS*, 24(1), 87-114.
+
+**組織論・ガバナンス**:
+- Argyris, C. (1977). "Double Loop Learning in Organizations." *HBR*, 55(5), 115-125.
+- Ostrom, E. (1990). *Governing the Commons.* Cambridge University Press.
+- Davis, J.H., Schoorman, F.D. & Donaldson, L. (1997). "Toward a Stewardship Theory of Management." *AMR*, 22(1), 20-47.
+
+**マルチエージェントシステム**:
+- Smith, R.G. (1980). "The Contract Net Protocol." *IEEE Trans. Computers*, C-29(12), 1104-1113.
+
+**レジリエンスエンジニアリング・複雑系**:
+- Carlson, J.M. & Doyle, J.C. (2002). "Complexity and Robustness." *PNAS*, 99(S1), 2538-2545.
+- Csete, M.E. & Doyle, J.C. (2002). "Reverse Engineering of Biological Complexity." *Science*, 295(5560), 1664-1669.
+- Hollnagel, E., Woods, D.D. & Leveson, N. (Eds.) (2006). *Resilience Engineering.* Ashgate.
+- Woods, D.D. (2015). "Four Concepts for Resilience." *RESS*, 141, 5-9.
+- Woods, D.D. (2018). "The Theory of Graceful Extensibility." *ESD*, 38(4), 433-457.
 
 ## 5. 原理の適用と検証
 

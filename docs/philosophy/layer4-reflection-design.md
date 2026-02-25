@@ -33,23 +33,25 @@ Layer 4 (Reflection) は、Neural Organization の「学習能力」の実体で
 
 **原理 1: 全レイヤーを対象とする**
 
-Reflection は単なる「フィードバックループ」ではない。Perception, Understanding, Reasoning, Execution のすべてを対象とした自己参照的な内省である。
+Reflection は単なる「フィードバックループ」ではない。Perception, Understanding, Reasoning, Execution のすべてを対象とした自己参照的な内省である。Flavell (1979) が定義した「メタ認知（metacognition）」— 自分自身の認知プロセスについての認知 — のシステムレベルでの実装と位置づけられる。個人のメタ認知が「自分の思考を思考する」能力であるように、Layer 4 は「システムの認知プロセス全体を対象とした認知」を行う。
+
+Schön (1983) は「省察的実践（reflective practice）」において、行為の中の省察（reflection-in-action）と行為についての省察（reflection-on-action）を区別した。Layer 4 のリアルタイム学習は前者に、定期的な深い分析は後者に対応する。
 
 **原理 2: 因果を追跡する**
 
-「何が起きたか」だけでなく、「なぜ起きたか」「どの層の何が原因か」を特定する。
+「何が起きたか」だけでなく、「なぜ起きたか」「どの層の何が原因か」を特定する。Argyris (1977) のダブルループ学習の概念がここで重要になる。シングルループ学習は行動の結果から行動を修正する（「メールのタイミングを変えよう」）。ダブルループ学習は行動の前提となっている枠組み自体を問い直す（「なぜそもそもメールという手段を選んだのか」「顧客コミュニケーションの設計原理を見直すべきではないか」）。Layer 4 が各レイヤーの前提を問い直す内省は、まさにダブルループ学習の実装である。
 
 **原理 3: 人間の行動は最も価値の高いデータである**
 
-人間が提案を修正したとき、それは「システムの理解が不十分」というシグナルである。これを構造化して学習する。
+人間が提案を修正したとき、それは「システムの理解が不十分」というシグナルである。これを構造化して学習する。Polanyi (1966) の暗黙知（tacit knowledge）の概念が示すように、人間は自分が知っていることを完全に言語化できない（"we can know more than we can tell"）。人間の修正行為は、言語化されていない暗黙知の外在化であり、Nonaka & Takeuchi (1995) の SECI モデルにおける「表出化（Externalization）」— 暗黙知を形式知に変換するプロセス — に相当する。ただし Bratianu (2010) が指摘するように、SECI モデルの4象限のうち真の「変換」と呼べるのは Externalization と Internalization のみであり、他の2象限（Socialization, Combination）は同種の知識の移転にすぎない点に留意が必要である。
 
 **原理 4: 成功と失敗の両方から学ぶ**
 
-失敗だけでなく、成功からもパターンを抽出する。
+失敗だけでなく、成功からもパターンを抽出する。Hollnagel (2011) のレジリエンスの4つの礎石 — Respond（対応する）、Monitor（監視する）、Anticipate（予測する）、Learn（学習する） — において、Learn は「成功と失敗の両方から正しい教訓を引き出す」能力と定義される。Layer 4 はこの4番目の礎石を担うレイヤーである。
 
 **原理 5: 継続的であり、定期的でもある**
 
-リアルタイムの学習と、定期的な深い分析の両方を行う。
+リアルタイムの学習と、定期的な深い分析の両方を行う。この二重の時間軸は、Wiener (1948) のサイバネティクスにおけるフィードバック制御の基本原理 — 出力を観測し、目標との差分を入力にフィードバックする — の適用である。リアルタイム学習は高頻度の短期フィードバックループとして、定期的な深い分析は低頻度の長期フィードバックループとして機能する。Deming の PDCA（Plan-Do-Check-Act）/ PDSA（Plan-Do-Study-Act）サイクルは、この継続的改善の古典的フレームワークであり、Layer 4 の週次レビュー・月次監査・四半期戦略レビューは、それぞれ異なる時間粒度での PDCA サイクルの回転に相当する。
 
 ## Reflection のプロセス
 
@@ -720,3 +722,55 @@ Layer 4 (Reflection) は、Neural Organization の「学習能力」であり、
 5. **継続的改善**: 即時適用と段階的検証
 
 この Reflection により、Neural Organization は時間とともに知性を高め、人間の介入を減らしながら、より高度な自律性を獲得する。
+
+## 学術的根拠
+
+Layer 4 の設計は、認知科学・知識創造論・レジリエンスエンジニアリング・サイバネティクスの複数のドメインから支持される。
+
+### 暗黙知と知識変換
+
+Polanyi, M. (1966). *The Tacit Dimension.* University of Chicago Press.
+
+「我々は語りうる以上のことを知りうる（we can know more than we can tell）」という暗黙知の概念。人間がシステムの提案を修正する行為は、言語化されていない暗黙知が行動として表出する瞬間であり、Layer 4 にとって最も価値の高い学習データとなる。
+
+### SECI モデルの表出化
+
+Nonaka, I. & Takeuchi, H. (1995). *The Knowledge-Creating Company.* Oxford University Press.
+
+組織における知識創造を Socialization（共同化）→ Externalization（表出化）→ Combination（連結化）→ Internalization（内面化）の4象限で説明するモデル。Layer 4 が人間の修正行為から暗黙知を構造化データに変換するプロセスは、Externalization に相当する。ただし Bratianu (2010) が指摘するように、真の知識「変換」と呼べるのは Externalization と Internalization のみであり、本設計もこの2つの変換に焦点を当てている。
+
+### ダブルループ学習
+
+Argyris, C. (1977). "Double Loop Learning in Organizations." *Harvard Business Review*, 55(5), 115-125.
+
+シングルループ学習が「行動の修正」にとどまるのに対し、ダブルループ学習は「行動の前提となる枠組み自体の修正」を行う。Layer 4 のステップ 2（各レイヤーへの内省）が、単に「次回はこうしよう」ではなく「なぜこの層がこの前提で動いていたのか」を問い直す設計は、ダブルループ学習の直接的な実装である。
+
+### メタ認知
+
+Flavell, J.H. (1979). "Metacognition and Cognitive Monitoring: A New Area of Cognitive-Developmental Inquiry." *American Psychologist*, 34(10), 906-911.
+
+自分自身の認知プロセスについての認知（メタ認知）の概念を確立した論文。Layer 4 は個人のメタ認知をシステムレベルに拡張したものであり、「システムがどう認知したか」「その認知プロセスのどこに問題があったか」を構造的に分析する。
+
+### 省察的実践
+
+Schön, D.A. (1983). *The Reflective Practitioner: How Professionals Think in Action.* Basic Books.
+
+熟練した専門家は行為の最中に省察し（reflection-in-action）、また行為の後に省察する（reflection-on-action）。Layer 4 のリアルタイム学習（即時フィードバックからの学習）は前者に、定期的な深い分析（週次・月次レビュー）は後者に対応する。
+
+### レジリエンスの4つの礎石
+
+Hollnagel, E. (2011). "Prologue: The Scope of Resilience Engineering." In *Resilience Engineering in Practice.* Ashgate.
+
+レジリエンスを構成する4つの能力 — Respond（対応）、Monitor（監視）、Anticipate（予測）、Learn（学習）— を定義。Learn は「成功と失敗の両方から正しい教訓を引き出す能力」であり、Layer 4 の設計原理 4「成功と失敗の両方から学ぶ」の理論的根拠である。
+
+### サイバネティクスとフィードバック制御
+
+Wiener, N. (1948). *Cybernetics: Or Control and Communication in the Animal and the Machine.* MIT Press.
+
+出力を観測し、目標との差分を入力にフィードバックすることで制御を行うという基本原理。Layer 4 はこのフィードバック制御をシステムの全レイヤーに適用し、複数の時間粒度（リアルタイム・週次・月次・四半期）でフィードバックループを回す。
+
+### PDCA / PDSA サイクル
+
+Deming, W.E. *Out of the Crisis.* MIT Press, 1986.
+
+Plan（計画）→ Do（実行）→ Check/Study（評価）→ Act（改善）の継続的改善サイクル。Layer 4 の週次レビュー・月次監査・四半期戦略レビューは、それぞれ異なる時間粒度での PDCA サイクルの回転である。Deming が強調した「データに基づく改善」は、ステップ 0（実行トレースの構造）が保証する。
