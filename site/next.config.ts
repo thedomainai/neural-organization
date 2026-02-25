@@ -13,7 +13,7 @@ const nextConfig: NextConfig = {
   },
   // Optimize package imports for Framer Motion and Radix UI
   experimental: {
-    optimizePackageImports: ["framer-motion", "@radix-ui/react-dialog", "@radix-ui/react-tooltip", "@radix-ui/react-tabs"],
+    optimizePackageImports: ["@radix-ui/react-dialog", "@radix-ui/react-tooltip", "@radix-ui/react-tabs"],
   },
 };
 
